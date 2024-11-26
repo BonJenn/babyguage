@@ -1,17 +1,18 @@
+type AgeGroup = "20-24" | "25-29" | "30-34" | "35-39" | "40-44" | "45+";
+type RelativeTiming = "-5" | "-4" | "-3" | "-2" | "-1" | "0" | "1" | "2";
+type ContraceptionType = "none" | "condom" | "pill" | "iud" | "withdrawal";
+
 export const fertilityFactors = {
   ageRelatedFertility: {
-    // Source: American Society for Reproductive Medicine
     "20-24": { monthlyChance: 0.25 },
     "25-29": { monthlyChance: 0.25 },
     "30-34": { monthlyChance: 0.20 },
     "35-39": { monthlyChance: 0.15 },
     "40-44": { monthlyChance: 0.05 },
     "45+": { monthlyChance: 0.01 }
-  },
+  } as Record<AgeGroup, { monthlyChance: number }>,
   
   ovulationTiming: {
-    // Days relative to ovulation and conception probability
-    // Source: New England Journal of Medicine study
     "-5": 0.10,
     "-4": 0.16,
     "-3": 0.14,
@@ -20,19 +21,18 @@ export const fertilityFactors = {
     "0": 0.33,
     "1": 0.15,
     "2": 0.09
-  },
+  } as Record<RelativeTiming, number>,
 
   contraceptionEffectiveness: {
-    // Source: WHO and CDC data
     "none": 1.0,
     "condom": 0.85,
     "pill": 0.91,
     "iud": 0.99,
     "withdrawal": 0.78
-  }
+  } as Record<ContraceptionType, number>
 };
 
-export function getAgeGroup(age: number): string {
+export function getAgeGroup(age: number): AgeGroup {
   if (age < 20) return "20-24";
   if (age <= 24) return "20-24";
   if (age <= 29) return "25-29";
