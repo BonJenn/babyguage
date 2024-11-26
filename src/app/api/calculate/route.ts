@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     
     // Calculate base probability using scientific data
-    let baseProbability = calculateBaseProbability(body);
+    const baseProbability = calculateBaseProbability(body);
     
     // Use AI to adjust for complex factor combinations
     const aiAdjustedProbability = await getAIAdjustedProbability(baseProbability, body);
@@ -67,7 +67,7 @@ function calculateBaseProbability(data: CalculationData) {
   
   // Apply contraception effectiveness
   const contraceptionFactor = data.contraception 
-    ? fertilityFactors.contraceptionEffectiveness[data.contraceptionType] 
+    ? fertilityFactors.contraceptionEffectiveness[data.contraceptionType || 'none']
     : 1.0;
   
   // Base probability from ovulation timing
