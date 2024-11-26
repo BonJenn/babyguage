@@ -4,9 +4,17 @@ import Image from 'next/image';
 import { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
 
+interface Params {
+  slug: string;
+}
+
+interface SearchParams {
+  [key: string]: string | string[] | undefined;
+}
+
 interface PageProps {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Params;
+  searchParams: SearchParams;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
