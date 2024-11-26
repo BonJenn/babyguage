@@ -4,13 +4,14 @@ import Image from 'next/image';
 import { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
 
-type Props = {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+interface PageProps {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const decodedSlug = decodeURIComponent(params.slug);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const decodedSlug = decodeURIComponent(resolvedParams.slug);
   try {
     const post = await BlogService.getPostBySlug(decodedSlug);
     
@@ -33,9 +34,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function BlogPostPage({ params }: Props) {
+export default async function BlogPostPage({ params }: PageProps) {
+  const resolvedParams = await params;
   try {
-    const post = await BlogService.getPostBySlug(params.slug);
+    const post = await BlogService.getPostBySlug(resolvedParams.slug);
 
     if (!post) {
       notFound();
