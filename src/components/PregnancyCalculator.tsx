@@ -53,6 +53,8 @@ export default function PregnancyCalculator() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      console.log('Submitting form data:', formData);
+      
       const response = await fetch('/api/calculate', {
         method: 'POST',
         headers: {
@@ -60,16 +62,25 @@ export default function PregnancyCalculator() {
         },
         body: JSON.stringify(formData),
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || 'Failed to calculate probability');
+      }
+      
       const data = await response.json();
       if (data.error) {
         throw new Error(data.error);
       }
+      
+      console.log('Received response:', data);
       setResult(data);
     } catch (error) {
-      console.error('Error calculating probability:', error);
-      alert('Failed to calculate probability. Please try again.');
+      console.error('Error in handleSubmit:', error);
+      alert(error instanceof Error ? error.message : 'Failed to calculate probability. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const renderQuestion = () => {

@@ -4,6 +4,7 @@ import { fertilityFactors, getAgeGroup, calculateCycleDay, ContraceptionType } f
 
 export async function POST(request: Request) {
   if (!process.env.OPENAI_API_KEY) {
+    console.error('OpenAI API key not configured');
     return NextResponse.json(
       { error: 'OpenAI API key not configured' },
       { status: 500 }
@@ -12,18 +13,24 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
+    console.log('Received data:', body);
     
     // Calculate base probability using scientific data
     const baseProbability = calculateBaseProbability(body);
+    console.log('Base probability:', baseProbability);
     
     // Use AI to adjust for complex factor combinations
     const aiAdjustedProbability = await getAIAdjustedProbability(baseProbability, body);
+    console.log('AI adjusted probability:', aiAdjustedProbability);
     
     return NextResponse.json(aiAdjustedProbability);
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Detailed error:', error);
     return NextResponse.json(
-      { error: 'Error calculating probability' },
+      { 
+        error: 'Error calculating probability',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
@@ -49,42 +56,55 @@ interface CalculationData {
 }
 
 function calculateBaseProbability(data: CalculationData) {
-  // Get age-based probability
-  const age = data.age;
-  const ageGroup = getAgeGroup(age);
-  const ageFactor = fertilityFactors.ageRelatedFertility[ageGroup].monthlyChance;
-  
-  // Calculate cycle timing
-  const cycleTiming = calculateCycleDay(
-    data.periodStart, 
-    data.sexDate, 
-    data.cycleLength,
-    data.periodEnd,
-    data.isCurrentlyMenstruating
-  );
-  
-  const ovulationFactor = fertilityFactors.ovulationTiming[cycleTiming.relativeTiming] || 0;
-  
-  // Apply contraception effectiveness
-  const contraceptionFactor = data.contraception 
-    ? fertilityFactors.contraceptionEffectiveness[data.contraceptionType || 'none' as ContraceptionType]
-    : 1.0;
-  
-  // Base probability from ovulation timing
-  let probability = ovulationFactor;
-  
-  // Modify by age factor
-  probability *= ageFactor;
-  
-  // Apply contraception reduction
-  probability *= (1 - contraceptionFactor);
-  
-  // Apply other modifiers
-  if (data.fertilityMeds) probability *= 1.5;
-  if (data.fertilityIssues) probability *= 0.5;
-  if (data.previousPregnancies > 0) probability *= 1.2;
-  
-  return probability * 100;
+  try {
+    // Get age-based probability
+    const age = data.age;
+    console.log('Processing age:', age);
+    const ageGroup = getAgeGroup(age);
+    const ageFactor = fertilityFactors.ageRelatedFertility[ageGroup].monthlyChance;
+    
+    // Calculate cycle timing
+    const cycleTiming = calculateCycleDay(
+      data.periodStart, 
+      data.sexDate, 
+      data.cycleLength,
+      data.periodEnd,
+      data.isCurrentlyMenstruating
+    );
+    console.log('Cycle timing:', cycleTiming);
+    
+    const ovulationFactor = fertilityFactors.ovulationTiming[cycleTiming.relativeTiming] || 0;
+    console.log('Ovulation factor:', ovulationFactor);
+    
+    // Apply contraception effectiveness
+    const contraceptionFactor = data.contraception 
+      ? fertilityFactors.contraceptionEffectiveness[data.contraceptionType || 'none' as ContraceptionType]
+      : 1.0;
+    console.log('Contraception factor:', contraceptionFactor);
+    
+    // Base probability from ovulation timing
+    let probability = ovulationFactor;
+    
+    // Modify by age factor
+    probability *= ageFactor;
+    console.log('After age factor:', probability);
+    
+    // Apply contraception reduction
+    probability *= (1 - contraceptionFactor);
+    console.log('After contraception:', probability);
+    
+    // Apply other modifiers
+    if (data.fertilityMeds) probability *= 1.5;
+    if (data.fertilityIssues) probability *= 0.5;
+    if (data.previousPregnancies > 0) probability *= 1.2;
+    
+    const finalProbability = probability * 100;
+    console.log('Final probability:', finalProbability);
+    return finalProbability;
+  } catch (error) {
+    console.error('Error in calculateBaseProbability:', error);
+    throw error;
+  }
 }
 
 async function getAIAdjustedProbability(baseProbability: number, data: CalculationData) {
