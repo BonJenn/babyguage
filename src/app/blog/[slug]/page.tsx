@@ -14,7 +14,7 @@ interface SearchParams {
 
 export async function generateMetadata({
   params,
-  searchParams,
+  _searchParams,
 }: {
   params: Promise<Params>;
   searchParams: SearchParams;
@@ -45,7 +45,7 @@ export async function generateMetadata({
 
 export default async function BlogPostPage({
   params,
-  searchParams,
+  _searchParams,
 }: {
   params: Params;
   searchParams: SearchParams;
