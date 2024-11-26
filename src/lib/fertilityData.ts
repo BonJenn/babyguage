@@ -43,7 +43,7 @@ export function getAgeGroup(age: number): AgeGroup {
 }
 
 export function calculateCycleDay(periodStart: string, sexDate: string, cycleLength: number, periodEnd?: string, isCurrentlyMenstruating?: boolean): { 
-  relativeTiming: string;
+  relativeTiming: RelativeTiming;
   cycleDay: number;
 } {
   const periodStartDate = new Date(periodStart);
@@ -62,36 +62,20 @@ export function calculateCycleDay(periodStart: string, sexDate: string, cycleLen
     const periodEndDate = new Date(periodEnd);
     const daysFromPeriodEnd = Math.floor((sexDateTime.getTime() - periodEndDate.getTime()) / (1000 * 60 * 60 * 24));
     const estimatedOvulationDay = Math.floor(cycleLength / 2) - (periodEndDate.getTime() - periodStartDate.getTime()) / (1000 * 60 * 60 * 24);
-    const daysFromOvulation = daysFromPeriodEnd - estimatedOvulationDay;
+    const daysFromOvulation = Math.min(Math.max(daysFromPeriodEnd - estimatedOvulationDay, -5), 2);
     
-    if (daysFromOvulation < -5) return {
-      relativeTiming: "-5",
-      cycleDay: cycleDay
-    };
-    if (daysFromOvulation > 2) return {
-      relativeTiming: "2",
-      cycleDay: cycleDay
-    };
     return {
-      relativeTiming: daysFromOvulation.toString(),
+      relativeTiming: daysFromOvulation.toString() as RelativeTiming,
       cycleDay: cycleDay
     };
   }
   
   // Fallback to original calculation if no period end date
   const ovulationDay = Math.floor(cycleLength / 2) - 2;
-  const daysFromOvulation = cycleDay - ovulationDay;
+  const daysFromOvulation = Math.min(Math.max(cycleDay - ovulationDay, -5), 2);
   
-  if (daysFromOvulation < -5) return {
-    relativeTiming: "-5",
-    cycleDay: cycleDay
-  };
-  if (daysFromOvulation > 2) return {
-    relativeTiming: "2",
-    cycleDay: cycleDay
-  };
   return {
-    relativeTiming: daysFromOvulation.toString(),
+    relativeTiming: daysFromOvulation.toString() as RelativeTiming,
     cycleDay: cycleDay
   };
 }
