@@ -28,7 +28,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <header className="header">Baby Guage - Pregnancy Calculator</header>
         {children}
+        <footer className="footer">© 2023 Baby Guage</footer>
       </body>
     </html>
   );

@@ -28,8 +28,16 @@ type Result = {
   explanation: string;
 };
 
-const inputClasses = "mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black";
-const labelClasses = "block text-black";
+const inputClasses = "input-seamless";
+const labelClasses = "question-label";
+const buttonClasses = "w-full bg-[#8b7355] hover:bg-[#6d5a43] text-white px-6 py-4 rounded-xl text-xl font-medium transition duration-300 shadow-lg hover:shadow-xl";
+const backButtonClasses = "w-full mt-2 bg-transparent border-2 border-[#8b7355] text-[#8b7355] hover:bg-[#8b7355] hover:text-white px-6 py-4 rounded-xl text-xl font-medium transition duration-300";
+
+const LoadingBar = () => (
+  <div className="fixed top-0 left-0 w-full h-1 bg-[#e8d5c4]">
+    <div className="h-full bg-[#8b7355] animate-loading-bar"></div>
+  </div>
+);
 
 export default function PregnancyCalculator() {
   const [step, setStep] = useState(1);
@@ -54,8 +62,6 @@ export default function PregnancyCalculator() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      console.log('Submitting form data:', formData);
-      
       const response = await fetch('/api/calculate', {
         method: 'POST',
         headers: {
@@ -63,21 +69,16 @@ export default function PregnancyCalculator() {
         },
         body: JSON.stringify(formData),
       });
-      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.details || 'Failed to calculate probability');
       }
-      
       const data = await response.json();
       if (data.error) {
         throw new Error(data.error);
       }
-      
-      console.log('Received response:', data);
       setResult(data);
     } catch (error) {
-      console.error('Error in handleSubmit:', error);
       alert(error instanceof Error ? error.message : 'Failed to calculate probability. Please try again.');
     } finally {
       setLoading(false);
@@ -88,21 +89,26 @@ export default function PregnancyCalculator() {
     switch (step) {
       case 1:
         return (
-          <div className="space-y-4">
+          <div className="question-container">
             <label className={labelClasses}>
               What is your age?
               <input
                 type="number"
-                min="0"
+                min="18"
                 max="100"
                 className={inputClasses}
                 value={formData.age || ''}
-                onChange={(e) => setFormData({ ...formData, age: parseInt(e.target.value) || 0 })}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value) || 0;
+                  if (value >= 18 || value === 0) {
+                    setFormData({ ...formData, age: value });
+                  }
+                }}
               />
             </label>
             <button
               onClick={() => setStep(2)}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              className={buttonClasses}
             >
               Next
             </button>
@@ -147,9 +153,14 @@ export default function PregnancyCalculator() {
                 />
               </label>
             )}
-            <button onClick={() => setStep(3)} className="bg-blue-500 text-white px-4 py-2 rounded">
-              Next
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => setStep(3)} className={buttonClasses}>
+                Next
+              </button>
+              <button onClick={() => setStep(1)} className={backButtonClasses}>
+                Back
+              </button>
+            </div>
           </div>
         );
 
@@ -165,12 +176,14 @@ export default function PregnancyCalculator() {
                 onChange={(e) => setFormData({ ...formData, sexDate: e.target.value })}
               />
             </label>
-            <button
-              onClick={() => setStep(4)}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Next
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => setStep(4)} className={buttonClasses}>
+                Next
+              </button>
+              <button onClick={() => setStep(2)} className={backButtonClasses}>
+                Back
+              </button>
+            </div>
           </div>
         );
 
@@ -191,12 +204,14 @@ export default function PregnancyCalculator() {
                 <option value="night">Night (12 AM - 6 AM)</option>
               </select>
             </label>
-            <button
-              onClick={() => setStep(5)}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Next
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => setStep(5)} className={buttonClasses}>
+                Next
+              </button>
+              <button onClick={() => setStep(3)} className={backButtonClasses}>
+                Back
+              </button>
+            </div>
           </div>
         );
 
@@ -246,9 +261,14 @@ export default function PregnancyCalculator() {
                 </select>
               </label>
             )}
-            <button onClick={() => setStep(6)} className="bg-blue-500 text-white px-4 py-2 rounded">
-              Next
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => setStep(6)} className={buttonClasses}>
+                Next
+              </button>
+              <button onClick={() => setStep(4)} className={backButtonClasses}>
+                Back
+              </button>
+            </div>
           </div>
         );
 
@@ -257,7 +277,6 @@ export default function PregnancyCalculator() {
           setStep(7);
           return null;
         }
-        
         return (
           <div className="space-y-4">
             <label className={labelClasses}>
@@ -284,9 +303,14 @@ export default function PregnancyCalculator() {
                 </select>
               </label>
             )}
-            <button onClick={() => setStep(7)} className="bg-blue-500 text-white px-4 py-2 rounded">
-              Next
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => setStep(7)} className={buttonClasses}>
+                Next
+              </button>
+              <button onClick={() => setStep(5)} className={backButtonClasses}>
+                Back
+              </button>
+            </div>
           </div>
         );
 
@@ -304,9 +328,14 @@ export default function PregnancyCalculator() {
                 <option value="true">Yes</option>
               </select>
             </label>
-            <button onClick={() => setStep(8)} className="bg-blue-500 text-white px-4 py-2 rounded">
-              Next
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => setStep(8)} className={buttonClasses}>
+                Next
+              </button>
+              <button onClick={() => setStep(6)} className={backButtonClasses}>
+                Back
+              </button>
+            </div>
           </div>
         );
 
@@ -324,9 +353,14 @@ export default function PregnancyCalculator() {
                 <option value="true">Yes</option>
               </select>
             </label>
-            <button onClick={() => setStep(9)} className="bg-blue-500 text-white px-4 py-2 rounded">
-              Next
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => setStep(9)} className={buttonClasses}>
+                Next
+              </button>
+              <button onClick={() => setStep(7)} className={backButtonClasses}>
+                Back
+              </button>
+            </div>
           </div>
         );
 
@@ -343,9 +377,14 @@ export default function PregnancyCalculator() {
                 onChange={(e) => setFormData({ ...formData, previousPregnancies: parseInt(e.target.value) || 0 })}
               />
             </label>
-            <button onClick={() => setStep(10)} className="bg-blue-500 text-white px-4 py-2 rounded">
-              Next
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => setStep(10)} className={buttonClasses}>
+                Next
+              </button>
+              <button onClick={() => setStep(8)} className={backButtonClasses}>
+                Back
+              </button>
+            </div>
           </div>
         );
 
@@ -363,9 +402,14 @@ export default function PregnancyCalculator() {
                 <option value="true">Yes</option>
               </select>
             </label>
-            <button onClick={handleSubmit} className="bg-blue-500 text-white px-4 py-2 rounded">
-              Calculate
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={handleSubmit} className={buttonClasses}>
+                Calculate
+              </button>
+              <button onClick={() => setStep(9)} className={backButtonClasses}>
+                Back
+              </button>
+            </div>
           </div>
         );
 
@@ -375,17 +419,29 @@ export default function PregnancyCalculator() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-2xl font-bold mb-4 text-black">Pregnancy Probability Calculator</h1>
+    <div className="max-w-2xl mx-auto p-8 bg-gradient-to-br from-white/30 via-white/20 to-transparent backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
+      <h1 className="text-4xl font-bold mb-8 text-[#4a3f35] tracking-tight">Pregnancy Probability Calculator</h1>
+      {loading && <LoadingBar />}
       {!result ? (
         renderQuestion()
       ) : (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-black">Results</h2>
-          <div className="text-black">
-            <p className="text-lg">Probability of Pregnancy: <span className="font-bold">{result.percentage}%</span></p>
-            <p className="text-lg">Risk Level: <span className="font-semibold">{result.riskLevel}</span></p>
-            <p className="mt-4">{result.explanation}</p>
+        <div className="space-y-8 text-center">
+          <h2 className="text-2xl font-bold text-[#4a3f35]">Results</h2>
+          <div className="space-y-2">
+            <p className="text-6xl font-bold text-[#8b7355]">{result.percentage}%</p>
+            <p className="text-xl text-[#4a3f35]"><strong>Risk Level:</strong> {result.riskLevel}</p>
+          </div>
+          <div className="text-left space-y-4 text-[#4a3f35]">
+            {result.explanation.split('. ').reduce((acc: string[], sentence: string, i: number) => {
+              if (i < result.explanation.split('. ').length / 2) {
+                acc[0] = acc[0] ? acc[0] + '. ' + sentence : sentence;
+              } else {
+                acc[1] = acc[1] ? acc[1] + '. ' + sentence : sentence;
+              }
+              return acc;
+            }, []).map((paragraph, index) => (
+              <p key={index}>{paragraph}.</p>
+            ))}
           </div>
           <button
             onClick={() => {
@@ -407,13 +463,12 @@ export default function PregnancyCalculator() {
                 medications: [],
               });
             }}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className={buttonClasses}
           >
             Calculate Again
           </button>
         </div>
       )}
-      {loading && <div className="text-center mt-4 text-black">Calculating...</div>}
     </div>
   );
 }
