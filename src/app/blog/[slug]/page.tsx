@@ -5,19 +5,12 @@ import { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
 
 type PageProps = {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-type Props = {
-  params: { slug: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
-
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
-  const { params } = props;
-  const resolvedParams = await params;
-  const decodedSlug = decodeURIComponent(resolvedParams.slug);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const decodedSlug = decodeURIComponent(params.slug);
   try {
     const post = await BlogService.getPostBySlug(decodedSlug);
     
@@ -40,8 +33,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   }
 }
 
-export default async function BlogPostPage(props: Props) {
-  const { params } = props;
+export default async function BlogPostPage({ params }: PageProps) {
   try {
     const post = await BlogService.getPostBySlug(params.slug);
 
