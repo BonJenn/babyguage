@@ -219,10 +219,12 @@ export default function PregnancyCalculator() {
                 What type of contraception?
                 <select
                   className={inputClasses}
-                  value={formData.contraceptionType || ''}
-                  onChange={(e) => setFormData({ ...formData, contraceptionType: e.target.value })}
+                  value={formData.contraceptionType || 'none'}
+                  onChange={(e) => setFormData({ 
+                    ...formData, 
+                    contraceptionType: e.target.value as ContraceptionType 
+                  })}
                 >
-                  <option value="">Select type...</option>
                   <option value="none">None</option>
                   <option value="condom">Condom</option>
                   <option value="pill">Birth Control Pill</option>
