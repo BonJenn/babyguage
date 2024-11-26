@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { ContraceptionType } from '../lib/fertilityData';
 
 type FormData = {
   age: number;
@@ -11,7 +12,7 @@ type FormData = {
   sexDate: string;
   timeOfDay: string;
   contraception: boolean;
-  contraceptionType?: string;
+  contraceptionType?: ContraceptionType;
   withdrawal?: boolean;
   urination?: boolean;
   finishInside: boolean;

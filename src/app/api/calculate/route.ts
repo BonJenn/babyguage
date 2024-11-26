@@ -1,6 +1,32 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { fertilityFactors, getAgeGroup, calculateCycleDay, ContraceptionType } from '../../../lib/fertilityData';
+import { 
+  fertilityFactors, 
+  getAgeGroup, 
+  calculateCycleDay,
+  type ContraceptionType,
+  type RelativeTiming,
+  type CycleTiming
+} from '../../../lib/fertilityData';
+
+export interface CalculationData {
+  age: number;
+  cycleLength: number;
+  periodStart: string;
+  periodEnd: string;
+  isCurrentlyMenstruating: boolean;
+  sexDate: string;
+  timeOfDay: string;
+  contraception: boolean;
+  contraceptionType?: ContraceptionType;
+  withdrawal?: boolean;
+  urination?: boolean;
+  finishInside: boolean;
+  fertilityMeds: boolean;
+  previousPregnancies: number;
+  fertilityIssues: boolean;
+  medications: string[];
+}
 
 export async function POST(request: Request) {
   if (!process.env.OPENAI_API_KEY) {
@@ -34,25 +60,6 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
-
-interface CalculationData {
-  age: number;
-  cycleLength: number;
-  periodStart: string;
-  periodEnd: string;
-  isCurrentlyMenstruating: boolean;
-  sexDate: string;
-  timeOfDay: string;
-  contraception: boolean;
-  contraceptionType?: ContraceptionType;
-  withdrawal?: boolean;
-  urination?: boolean;
-  finishInside: boolean;
-  fertilityMeds: boolean;
-  previousPregnancies: number;
-  fertilityIssues: boolean;
-  medications: string[];
 }
 
 function calculateBaseProbability(data: CalculationData) {
