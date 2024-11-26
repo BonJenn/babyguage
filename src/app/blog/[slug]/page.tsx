@@ -14,7 +14,7 @@ interface SearchParams {
 
 interface PageProps {
   params: Promise<Params>;
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -42,8 +42,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function BlogPostPage({ params }: PageProps) {
+export default async function BlogPostPage({ params, searchParams }: PageProps) {
   const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
   try {
     const post = await BlogService.getPostBySlug(resolvedParams.slug);
 
