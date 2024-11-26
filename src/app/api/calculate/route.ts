@@ -9,6 +9,7 @@ import {
 
 export interface CalculationData {
   age: number;
+  hasPeriods: boolean;
   cycleLength: number;
   periodStart: string;
   periodEnd: string;
@@ -68,42 +69,48 @@ function calculateBaseProbability(data: CalculationData) {
     const ageGroup = getAgeGroup(age);
     const ageFactor = fertilityFactors.ageRelatedFertility[ageGroup].monthlyChance;
     
-    // Calculate cycle timing
-    const cycleTiming = calculateCycleDay(
-      data.periodStart, 
-      data.sexDate, 
-      data.cycleLength,
-      data.periodEnd,
-      data.isCurrentlyMenstruating
-    );
-    console.log('Cycle timing:', cycleTiming);
+    let probability = 0;
     
-    const ovulationFactor = fertilityFactors.ovulationTiming[cycleTiming.relativeTiming] || 0;
-    console.log('Ovulation factor:', ovulationFactor);
+    if (!data.hasPeriods) {
+      // If no periods, start with a very low base probability
+      probability = 0.05; // 5% base chance
+      
+      // Adjust based on other factors
+      if (data.fertilityMeds) probability *= 2; // Double chance with fertility meds
+      if (data.fertilityIssues) probability *= 0.5; // Halve chance with known issues
+      
+      console.log('No periods - adjusted base probability:', probability);
+    } else {
+      // Normal calculation for people with periods
+      const cycleTiming = calculateCycleDay(
+        data.periodStart, 
+        data.sexDate, 
+        data.cycleLength,
+        data.periodEnd,
+        data.isCurrentlyMenstruating
+      );
+      console.log('Cycle timing:', cycleTiming);
+      
+      const ovulationFactor = fertilityFactors.ovulationTiming[cycleTiming.relativeTiming] || 0;
+      console.log('Ovulation factor:', ovulationFactor);
+      
+      probability = ovulationFactor;
+      probability *= ageFactor;
+    }
     
-    // Apply contraception effectiveness
+    // Apply common modifiers for both cases
     const contraceptionFactor = data.contraception 
       ? fertilityFactors.contraceptionEffectiveness[data.contraceptionType || 'none' as ContraceptionType]
       : 1.0;
     console.log('Contraception factor:', contraceptionFactor);
     
-    // Base probability from ovulation timing
-    let probability = ovulationFactor;
-    
-    // Modify by age factor
-    probability *= ageFactor;
-    console.log('After age factor:', probability);
-    
-    // Apply contraception reduction
     probability *= (1 - contraceptionFactor);
-    console.log('After contraception:', probability);
     
-    // Apply other modifiers
     if (data.fertilityMeds) probability *= 1.5;
     if (data.fertilityIssues) probability *= 0.5;
     if (data.previousPregnancies > 0) probability *= 1.2;
     
-    const finalProbability = probability * 100;
+    const finalProbability = Math.min(probability * 100, 30); // Cap at 30%
     console.log('Final probability:', finalProbability);
     return finalProbability;
   } catch (error) {
@@ -127,9 +134,11 @@ async function getAIAdjustedProbability(baseProbability: number, data: Calculati
   let factorsString = `
     - Base probability: ${baseProbability}%
     - Age: ${data.age}
+    - Has regular periods: ${data.hasPeriods}
+    ${data.hasPeriods ? `
     - Cycle length: ${data.cycleLength} days
     - Current cycle day: Day ${cycleTiming.cycleDay} of ${data.cycleLength}
-    - Days relative to ovulation: ${cycleTiming.relativeTiming} (negative means days before ovulation, positive means days after)
+    - Days relative to ovulation: ${cycleTiming.relativeTiming}` : ''}
     - Currently menstruating: ${data.isCurrentlyMenstruating}
     - Time of day: ${data.timeOfDay}
     - Contraception used: ${data.contraception}

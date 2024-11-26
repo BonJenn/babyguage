@@ -5,6 +5,7 @@ import type { ContraceptionType } from '../lib/fertilityData';
 
 type FormData = {
   age: number;
+  hasPeriods: boolean;
   cycleLength: number;
   periodStart: string;
   periodEnd: string;
@@ -43,6 +44,7 @@ export default function PregnancyCalculator() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     age: 0,
+    hasPeriods: true,
     cycleLength: 28,
     periodStart: '',
     periodEnd: '',
@@ -128,39 +130,64 @@ export default function PregnancyCalculator() {
         return (
           <div className="space-y-4">
             <label className={labelClasses}>
-              When did your last period start?
-              <input
-                type="date"
-                className={inputClasses}
-                value={formData.periodStart}
-                onChange={(e) => setFormData({ ...formData, periodStart: e.target.value })}
-              />
-            </label>
-            <label className={labelClasses}>
-              Are you currently on your period?
+              Do you get periods?
               <select
                 className={inputClasses}
-                value={formData.isCurrentlyMenstruating.toString()}
-                onChange={(e) => setFormData({ 
-                  ...formData, 
-                  isCurrentlyMenstruating: e.target.value === 'true',
-                  periodEnd: e.target.value === 'true' ? '' : formData.periodEnd
-                })}
+                value={formData.hasPeriods?.toString() || 'true'}
+                onChange={(e) => {
+                  const hasPeriods = e.target.value === 'true';
+                  setFormData({ 
+                    ...formData, 
+                    hasPeriods,
+                    periodStart: hasPeriods ? formData.periodStart : '',
+                    periodEnd: hasPeriods ? formData.periodEnd : '',
+                    isCurrentlyMenstruating: hasPeriods ? formData.isCurrentlyMenstruating : false
+                  });
+                }}
               >
-                <option value="false">No</option>
                 <option value="true">Yes</option>
+                <option value="false">No</option>
               </select>
             </label>
-            {!formData.isCurrentlyMenstruating && (
-              <label className={labelClasses}>
-                When did your last period end?
-                <input
-                  type="date"
-                  className={inputClasses}
-                  value={formData.periodEnd}
-                  onChange={(e) => setFormData({ ...formData, periodEnd: e.target.value })}
-                />
-              </label>
+            
+            {formData.hasPeriods && (
+              <>
+                <label className={labelClasses}>
+                  When did your last period start?
+                  <input
+                    type="date"
+                    className={inputClasses}
+                    value={formData.periodStart}
+                    onChange={(e) => setFormData({ ...formData, periodStart: e.target.value })}
+                  />
+                </label>
+                <label className={labelClasses}>
+                  Are you currently on your period?
+                  <select
+                    className={inputClasses}
+                    value={formData.isCurrentlyMenstruating.toString()}
+                    onChange={(e) => setFormData({ 
+                      ...formData, 
+                      isCurrentlyMenstruating: e.target.value === 'true',
+                      periodEnd: e.target.value === 'true' ? '' : formData.periodEnd
+                    })}
+                  >
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                  </select>
+                </label>
+                {!formData.isCurrentlyMenstruating && (
+                  <label className={labelClasses}>
+                    When did your last period end?
+                    <input
+                      type="date"
+                      className={inputClasses}
+                      value={formData.periodEnd}
+                      onChange={(e) => setFormData({ ...formData, periodEnd: e.target.value })}
+                    />
+                  </label>
+                )}
+              </>
             )}
             <div className="flex flex-col gap-2">
               <button onClick={() => setStep(3)} className={buttonClasses}>
@@ -458,6 +485,7 @@ export default function PregnancyCalculator() {
               setResult(null);
               setFormData({
                 age: 0,
+                hasPeriods: true,
                 cycleLength: 28,
                 periodStart: '',
                 periodEnd: '',
