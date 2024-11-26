@@ -1,7 +1,6 @@
 import { config } from 'dotenv';
 import { resolve } from 'path';
 import { generateBlogPost } from '../services/blogGenerator';
-import { BlogService } from '../services/blogService';
 
 // Load environment variables from .env.local
 const result = config({ path: resolve(process.cwd(), '.env.local') });

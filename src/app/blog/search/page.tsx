@@ -17,11 +17,11 @@ export default async function SearchPage({ searchParams }: Props) {
       
       {posts.length === 0 ? (
         <p className="text-center text-gray-600">
-          No posts found for "{query}"
+          No posts found for &quot;{query}&quot;
         </p>
       ) : (
         <>
-          <p className="mb-8">Found {posts.length} posts for "{query}"</p>
+          <p className="mb-8">Found {posts.length} posts for &quot;{query}&quot;</p>
           <BlogList posts={posts} />
         </>
       )}

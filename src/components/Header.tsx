@@ -1,12 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   return (
     <header className="bg-[#e8d5c4] text-[#4a3f35]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

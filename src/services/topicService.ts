@@ -1,4 +1,4 @@
-import { MongoClient, Collection } from 'mongodb';
+import { Collection } from 'mongodb';
 import clientPromise from '../lib/mongodb';
 
 interface UsedTopic {
