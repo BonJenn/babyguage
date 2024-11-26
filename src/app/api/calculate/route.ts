@@ -29,7 +29,26 @@ export async function POST(request: Request) {
   }
 }
 
-function calculateBaseProbability(data: any) {
+interface CalculationData {
+  age: number;
+  cycleLength: number;
+  periodStart: string;
+  periodEnd: string;
+  isCurrentlyMenstruating: boolean;
+  sexDate: string;
+  timeOfDay: string;
+  contraception: boolean;
+  contraceptionType?: string;
+  withdrawal?: boolean;
+  urination?: boolean;
+  finishInside: boolean;
+  fertilityMeds: boolean;
+  previousPregnancies: number;
+  fertilityIssues: boolean;
+  medications: string[];
+}
+
+function calculateBaseProbability(data: CalculationData) {
   // Get age-based probability
   const age = data.age;
   const ageGroup = getAgeGroup(age);
@@ -68,7 +87,7 @@ function calculateBaseProbability(data: any) {
   return probability * 100;
 }
 
-async function getAIAdjustedProbability(baseProbability: number, data: any) {
+async function getAIAdjustedProbability(baseProbability: number, data: CalculationData) {
   const openai = new OpenAI();
   
   // Build comprehensive factors string
