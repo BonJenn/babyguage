@@ -94,20 +94,29 @@ export default function PregnancyCalculator() {
               What is your age?
               <input
                 type="number"
-                min="18"
-                max="100"
                 className={inputClasses}
-                value={formData.age || ''}
+                value={formData.age === 0 ? '' : formData.age}
                 onChange={(e) => {
-                  const value = parseInt(e.target.value) || 0;
-                  if (value >= 18 || value === 0) {
-                    setFormData({ ...formData, age: value });
+                  const value = e.target.value === '' ? 0 : parseInt(e.target.value);
+                  setFormData({ ...formData, age: value });
+                }}
+                onBlur={() => {
+                  if (formData.age < 18 && formData.age !== 0) {
+                    alert("You must be 18 or older to use this calculator.");
+                    setFormData({ ...formData, age: 0 });
                   }
                 }}
+                placeholder="Enter your age"
               />
             </label>
             <button
-              onClick={() => setStep(2)}
+              onClick={() => {
+                if (formData.age < 18) {
+                  alert("You must be 18 or older to use this calculator.");
+                  return;
+                }
+                setStep(2);
+              }}
               className={buttonClasses}
             >
               Next
