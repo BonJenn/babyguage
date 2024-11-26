@@ -4,9 +4,7 @@ import {
   fertilityFactors, 
   getAgeGroup, 
   calculateCycleDay,
-  type ContraceptionType,
-  type RelativeTiming,
-  type CycleTiming
+  type ContraceptionType
 } from '../../../lib/fertilityData';
 
 export interface CalculationData {
