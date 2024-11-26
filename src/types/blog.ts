@@ -11,3 +11,10 @@ export interface BlogPost {
   seoDescription: string;
   seoKeywords: string[];
 }
+
+export interface BlogImage {
+  url: string;
+  alt: string;
+  width: number;
+  height: number;
+}

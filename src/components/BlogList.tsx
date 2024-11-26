@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { BlogPost } from '../types/blog';
+import OptimizedImage from './OptimizedImage';
 
 export default function BlogList({ posts }: { posts: BlogPost[] }) {
   return (
@@ -9,11 +9,10 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
         <article key={post.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
           <Link href={`/blog/${post.slug}`}>
             <div className="relative h-48">
-              <Image
+              <OptimizedImage
                 src={post.coverImage}
                 alt={post.title}
-                fill
-                className="object-cover"
+                className="object-cover w-full h-48"
               />
             </div>
             <div className="p-6">

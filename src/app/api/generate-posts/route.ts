@@ -1,32 +1,41 @@
 import { NextResponse } from 'next/server';
-import { generateBlogPost } from '../../../services/blogGenerator';
+import { generateBlogPost, generateUniqueTopic } from '../../../services/blogGenerator';
 
-const topics = [
-  "Early Pregnancy Symptoms",
-  "Fertility Foods",
-  "Ovulation Tracking Methods",
-  "Natural Fertility Boosters",
-  "Understanding Your Cycle",
-  // Add more topics...
-];
-
-export async function POST() {
+export async function POST(request: Request) {
   try {
-    // Generate 3 posts
-    const generatePromises = Array(3)
+    const { count = 3 } = await request.json();
+    const numPosts = Math.min(Math.max(1, count), 10);
+
+    console.log('Starting post generation, count:', numPosts);
+
+    const generatePromises = Array(numPosts)
       .fill(null)
-      .map(() => {
-        const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-        return generateBlogPost(randomTopic);
+      .map(async (_, index) => {
+        try {
+          console.log(`Generating post ${index + 1}/${numPosts}`);
+          const topic = await generateUniqueTopic();
+          console.log(`Generated topic: ${topic}`);
+          return await generateBlogPost(topic);
+        } catch (error) {
+          console.error(`Error generating post ${index + 1}:`, error);
+          throw error;
+        }
       });
 
-    await Promise.all(generatePromises);
-
-    return NextResponse.json({ success: true });
+    const results = await Promise.all(generatePromises);
+    
+    return NextResponse.json({ 
+      success: true,
+      count: results.length,
+      posts: results 
+    });
   } catch (error) {
-    console.error('Error generating posts:', error);
+    console.error('Detailed error in generate-posts:', error);
     return NextResponse.json(
-      { error: 'Failed to generate posts' },
+      { 
+        error: 'Failed to generate posts',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }

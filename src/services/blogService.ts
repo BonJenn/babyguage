@@ -30,7 +30,11 @@ export class BlogService {
 
   static async getPostBySlug(slug: string) {
     const collection = await this.getCollection();
-    return collection.findOne({ slug });
+    const decodedSlug = decodeURIComponent(slug);
+    console.log('Looking for post with slug:', decodedSlug);
+    const post = await collection.findOne({ slug: decodedSlug });
+    console.log('Found post:', post ? 'yes' : 'no');
+    return post;
   }
 
   static async searchPosts(query: string) {
