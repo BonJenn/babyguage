@@ -1,6 +1,6 @@
 type AgeGroup = "20-24" | "25-29" | "30-34" | "35-39" | "40-44" | "45+";
 type RelativeTiming = "-5" | "-4" | "-3" | "-2" | "-1" | "0" | "1" | "2";
-type ContraceptionType = "none" | "condom" | "pill" | "iud" | "withdrawal";
+export type ContraceptionType = "none" | "condom" | "pill" | "iud" | "withdrawal";
 
 export const fertilityFactors = {
   ageRelatedFertility: {

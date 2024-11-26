@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { fertilityFactors, getAgeGroup, calculateCycleDay } from '../../../lib/fertilityData';
+import { fertilityFactors, getAgeGroup, calculateCycleDay, ContraceptionType } from '../../../lib/fertilityData';
 
 export async function POST(request: Request) {
   if (!process.env.OPENAI_API_KEY) {
