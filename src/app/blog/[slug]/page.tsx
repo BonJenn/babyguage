@@ -12,13 +12,15 @@ interface SearchParams {
   [key: string]: string | string[] | undefined;
 }
 
+interface PageProps {
+  params: Promise<Params>;
+  searchParams: SearchParams;
+}
+
 export async function generateMetadata({
   params,
   _searchParams,
-}: {
-  params: Promise<Params>;
-  searchParams: SearchParams;
-}): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const decodedSlug = decodeURIComponent(resolvedParams.slug);
   try {
@@ -46,12 +48,10 @@ export async function generateMetadata({
 export default async function BlogPostPage({
   params,
   _searchParams,
-}: {
-  params: Params;
-  searchParams: SearchParams;
-}) {
+}: PageProps) {
+  const resolvedParams = await params;
   try {
-    const post = await BlogService.getPostBySlug(params.slug);
+    const post = await BlogService.getPostBySlug(resolvedParams.slug);
 
     if (!post) {
       notFound();
