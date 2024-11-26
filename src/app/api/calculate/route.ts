@@ -38,7 +38,7 @@ interface CalculationData {
   sexDate: string;
   timeOfDay: string;
   contraception: boolean;
-  contraceptionType?: string;
+  contraceptionType?: ContraceptionType;
   withdrawal?: boolean;
   urination?: boolean;
   finishInside: boolean;
@@ -67,7 +67,7 @@ function calculateBaseProbability(data: CalculationData) {
   
   // Apply contraception effectiveness
   const contraceptionFactor = data.contraception 
-    ? fertilityFactors.contraceptionEffectiveness[data.contraceptionType || 'none']
+    ? fertilityFactors.contraceptionEffectiveness[data.contraceptionType || 'none' as ContraceptionType]
     : 1.0;
   
   // Base probability from ovulation timing
