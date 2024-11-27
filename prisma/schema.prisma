@@ -1,0 +1,22 @@
+   datasource db {
+     provider = "mongodb"
+     url      = env("DATABASE_URL")
+   }
+
+   generator client {
+     provider = "prisma-client-js"
+   }
+
+   model BlogPost {
+     id          String   @id @default(auto()) @map("_id") @db.ObjectId
+     title       String
+     slug        String   @unique
+     content     String
+     excerpt     String
+     coverImage  String?
+     publishDate DateTime
+     tags        String[]
+     seoTitle    String
+     seoDescription String
+     seoKeywords String[]
+   }

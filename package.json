@@ -15,6 +15,7 @@
     "check-env": "tsx src/scripts/checkEnv.ts"
   },
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "cloudinary": "^2.5.1",
     "dotenv": "^16.4.5",
     "mongodb": "^6.11.0",
@@ -36,8 +37,8 @@
     "eslint-config-next": "15.0.3",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.3.0",
+    "ts-node": "^10.9.1",
     "tsx": "^4.19.2",
-    "typescript": "^5.0.0",
-    "ts-node": "^10.9.1"
+    "typescript": "^5.0.0"
   }
 }
