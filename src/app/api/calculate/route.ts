@@ -28,7 +28,7 @@ export interface CalculationData {
 }
 
 export async function POST(request: Request) {
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.OPENAI_API_KEY_2) {
     console.error('OpenAI API key not configured');
     return NextResponse.json(
       { error: 'OpenAI API key not configured' },

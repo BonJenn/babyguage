@@ -7,7 +7,7 @@ config({ path: resolve(process.cwd(), '.env.local') });
 const requiredEnvVars = [
   'MONGODB_URI',
   'MONGODB_DB',
-  'OPENAI_API_KEY',
+  'OPENAI_API_KEY_2',
   'CLOUDINARY_CLOUD_NAME',
   'CLOUDINARY_API_KEY',
   'CLOUDINARY_API_SECRET'

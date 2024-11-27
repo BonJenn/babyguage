@@ -10,7 +10,7 @@ console.log('Current working directory:', process.cwd());
 console.log('Environment variables loaded:', {
   MONGODB_URI: process.env.MONGODB_URI || 'Not found - Please check your .env.local file',
   MONGODB_DB: process.env.MONGODB_DB || 'Not found - Please check your .env.local file',
-  OPENAI_API_KEY: process.env.OPENAI_API_KEY || 'Not found - Please check your .env.local file'
+  OPENAI_API_KEY_2: process.env.OPENAI_API_KEY_2 || 'Not found - Please check your .env.local file'
 });
 
 const initialTopics = [

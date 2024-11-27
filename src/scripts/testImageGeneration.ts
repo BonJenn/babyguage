@@ -11,10 +11,10 @@ console.log('Environment variables check:');
 console.log('CLOUDINARY_CLOUD_NAME:', process.env.CLOUDINARY_CLOUD_NAME ? '✅' : '❌');
 console.log('CLOUDINARY_API_KEY:', process.env.CLOUDINARY_API_KEY ? '✅' : '❌');
 console.log('CLOUDINARY_API_SECRET:', process.env.CLOUDINARY_API_SECRET ? '✅' : '❌');
-console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? '✅' : '❌');
+console.log('OPENAI_API_KEY_2:', process.env.OPENAI_API_KEY_2 ? '✅' : '❌');
 
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: process.env.OPENAI_API_KEY_2,
 });
 
 async function testImageGeneration() {
