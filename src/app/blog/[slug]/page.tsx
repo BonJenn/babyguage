@@ -69,7 +69,7 @@ export default async function BlogPostPage({ params, searchParams: _searchParams
         <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
         
         <div className="flex gap-2 mb-8">
-          {post.tags.map((tag) => (
+          {post.tags.map((tag: string) => (
             <span 
               key={tag}
               className="bg-[#e8d5c4] text-[#4a3f35] px-3 py-1 rounded-full text-sm"
