@@ -19,13 +19,27 @@ export class BlogService {
     return result;
   }
 
-  static async getPosts(limit = 12) {
+  static async getPosts(limit = 12): Promise<BlogPost[]> {
     const collection = await this.getCollection();
-    return collection
+    const posts = await collection
       .find({})
       .sort({ publishDate: -1 })
       .limit(limit)
       .toArray();
+
+    return posts.map(post => ({
+      id: post._id.toString(),
+      title: post.title,
+      slug: post.slug,
+      content: post.content,
+      excerpt: post.excerpt,
+      coverImage: post.coverImage,
+      publishDate: post.publishDate.toISOString(),
+      tags: post.tags,
+      seoTitle: post.seoTitle,
+      seoDescription: post.seoDescription,
+      seoKeywords: post.seoKeywords,
+    }));
   }
 
   static async getPostBySlug(slug: string) {
