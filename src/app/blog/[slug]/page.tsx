@@ -44,7 +44,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogPostPage({ params, searchParams }: PageProps) {
   const resolvedParams = await params;
-  const resolvedSearchParams = await searchParams;
+  // Remove or use resolvedSearchParams if not needed
+  // const resolvedSearchParams = await searchParams;
   try {
     const post = await BlogService.getPostBySlug(resolvedParams.slug);
 
