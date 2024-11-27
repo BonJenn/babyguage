@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 import { resolve } from 'path';
 import { generateBlogPost } from '../services/blogGenerator';
 
-// Load environment variables from .env.local
+// Load environment vars from .env.local
 const result = config({ path: resolve(process.cwd(), '.env.local') });
 
 console.log('Environment loading result:', result);
