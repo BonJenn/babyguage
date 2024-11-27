@@ -2,12 +2,17 @@ import { BlogService } from '../../../services/blogService';
 import BlogList from '../../../components/BlogList';
 import BlogSearch from '../../../components/BlogSearch';
 
-interface Props {
-  searchParams: { q: string };
+interface SearchParams {
+  q: string;
 }
 
-export default async function SearchPage({ searchParams }: Props) {
-  const query = searchParams.q || '';
+interface PageProps {
+  searchParams: Promise<SearchParams>;
+}
+
+export default async function SearchPage({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  const query = resolvedSearchParams.q || '';
   const posts = await BlogService.searchPosts(query);
 
   return (
