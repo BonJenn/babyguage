@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function BlogPostPage({ params, searchParams }: PageProps) {
+export default async function BlogPostPage({ params, searchParams: _searchParams }: PageProps) {
   const resolvedParams = await params;
   // Remove or use resolvedSearchParams if not needed
   // const resolvedSearchParams = await searchParams;
