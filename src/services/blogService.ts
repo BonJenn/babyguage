@@ -51,9 +51,9 @@ export class BlogService {
     return post;
   }
 
-  static async searchPosts(query: string) {
+  static async searchPosts(query: string): Promise<BlogPost[]> {
     const collection = await this.getCollection();
-    return collection
+    const posts = await collection
       .find({
         $or: [
           { title: { $regex: query, $options: 'i' } },
@@ -63,5 +63,19 @@ export class BlogService {
       })
       .sort({ publishDate: -1 })
       .toArray();
+
+    return posts.map(post => ({
+      id: post._id.toString(),
+      title: post.title,
+      slug: post.slug,
+      content: post.content,
+      excerpt: post.excerpt,
+      coverImage: post.coverImage,
+      publishDate: post.publishDate.toISOString(),
+      tags: post.tags,
+      seoTitle: post.seoTitle,
+      seoDescription: post.seoDescription,
+      seoKeywords: post.seoKeywords,
+    }));
   }
 }
