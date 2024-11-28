@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { generateDailyPosts } from '../../../services/blogScheduler';
 import { config } from 'dotenv';
-import { resolve } from 'path';
-
-// Load environment variables
-config({ path: resolve(process.cwd(), '.env.local') });
 
 export async function GET(request: Request) {
   try {
@@ -21,6 +17,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Failed to generate posts' }, { status: 500 });
   }
 }
-
-// Protect the route from public access
-export const runtime = 'edge';
