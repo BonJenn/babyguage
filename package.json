@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
+    "build": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "generate-posts": "tsx src/scripts/generateInitialPosts.ts",
@@ -14,7 +14,7 @@
     "check-topics": "ts-node src/scripts/checkTopicDiversity.ts",
     "check-env": "tsx src/scripts/checkEnv.ts",
     "start-scheduler": "ts-node src/scripts/scheduler.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "npx prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

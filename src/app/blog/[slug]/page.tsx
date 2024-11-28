@@ -44,8 +44,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogPostPage({ params, searchParams: _searchParams }: PageProps) {
   const resolvedParams = await params;
-  // Remove or use resolvedSearchParams if not needed
-  // const resolvedSearchParams = await searchParams;
   try {
     const post = await BlogService.getPostBySlug(resolvedParams.slug);
 
@@ -56,30 +54,35 @@ export default async function BlogPostPage({ params, searchParams: _searchParams
     return (
       <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {post.coverImage && (
-          <div className="relative h-[400px] mb-8">
+          <div className="relative h-[400px] mb-12">
             <Image
               src={post.coverImage}
               alt={post.title}
               fill
-              className="object-cover rounded-lg"
+              className="object-cover rounded-xl shadow-lg"
             />
           </div>
         )}
         
-        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+        <h1 className="text-5xl font-bold mb-6 text-gray-800">{post.title}</h1>
         
-        <div className="flex gap-2 mb-8">
+        <div className="flex flex-wrap gap-3 mb-12">
           {post.tags.map((tag: string) => (
             <span 
               key={tag}
-              className="bg-[#e8d5c4] text-[#4a3f35] px-3 py-1 rounded-full text-sm"
+              className="bg-[#f5efe9] text-[#4a3f35] px-4 py-2 rounded-lg text-sm font-medium 
+                         hover:bg-[#e8d5c4] transition-colors duration-200 cursor-default"
             >
               {tag}
             </span>
           ))}
         </div>
 
-        <div className="prose prose-lg max-w-none">
+        <div className="prose prose-lg max-w-none prose-headings:text-gray-800 
+                      prose-p:text-gray-600 prose-p:leading-relaxed prose-p:mb-8
+                      prose-h2:text-3xl prose-h2:font-semibold prose-h2:mt-12 prose-h2:mb-6
+                      prose-h3:text-2xl prose-h3:font-medium prose-h3:mt-8 prose-h3:mb-4
+                      prose-ul:my-6 prose-li:text-gray-600">
           <ReactMarkdown>{post.content}</ReactMarkdown>
         </div>
       </article>
