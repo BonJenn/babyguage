@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "generate-posts": "tsx src/scripts/generateInitialPosts.ts",
@@ -13,7 +13,8 @@
     "setup-db": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/setupDatabase.ts",
     "check-topics": "ts-node src/scripts/checkTopicDiversity.ts",
     "check-env": "tsx src/scripts/checkEnv.ts",
-    "start-scheduler": "ts-node src/scripts/scheduler.ts"
+    "start-scheduler": "ts-node src/scripts/scheduler.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
@@ -26,7 +27,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^9.0.1",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "prisma": "^5.22.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
