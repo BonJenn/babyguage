@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { generateDailyPosts } from '../../../services/blogScheduler';
-import { config } from 'dotenv';
 
 export async function GET(request: Request) {
   try {

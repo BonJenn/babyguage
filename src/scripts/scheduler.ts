@@ -2,8 +2,8 @@
 import cron from 'node-cron';
 import { generateDailyPosts } from '../services/blogScheduler';
 
-// Schedule the task to run every 144 minutes (10 times per day)
-cron.schedule('*/144 * * * *', async () => {
+// Schedule the task to run every 2 hours
+cron.schedule('0 */2 * * *', async () => {
   try {
     await generateDailyPosts();
     console.log('Blog posts generated successfully.');
@@ -12,4 +12,4 @@ cron.schedule('*/144 * * * *', async () => {
   }
 });
 
-console.log('Cron job scheduled to run every 144 minutes.');
+console.log('Cron job scheduled to run every 2 hours.');
