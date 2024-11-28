@@ -4,7 +4,7 @@ import { BlogPost } from '../types/blog';
 import slugify from 'slugify';
 import { BlogService } from './blogService';
 
-const openai = new OpenAI();
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY_2 });
 
 export async function generateBlogPost(topic: string): Promise<BlogPost> {
   try {

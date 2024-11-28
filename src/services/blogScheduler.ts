@@ -12,8 +12,8 @@ const topics = [
 
 export async function generateDailyPosts() {
   try {
-    // Generate 3 posts
-    for (let i = 0; i < 3; i++) {
+    // Generate 10 posts
+    for (let i = 0; i < 10; i++) {
       const randomTopic = topics[Math.floor(Math.random() * topics.length)];
       const post = await generateBlogPost(randomTopic);
       
