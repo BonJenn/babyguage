@@ -12,16 +12,16 @@ const topics = [
 
 export async function generateDailyPosts() {
   try {
-    // Generate 10 posts
-    for (let i = 0; i < 10; i++) {
-      const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-      const post = await generateBlogPost(randomTopic);
-      
-      // Save to database
-      await prisma.blogPost.create({
-        data: post
-      });
-    }
+    // Generate 1 post
+    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+    const post = await generateBlogPost(randomTopic);
+    
+    // Save to database
+    await prisma.blogPost.create({
+      data: post
+    });
+    
+    console.log(`Generated post: ${post.title}`);
   } catch (error) {
     console.error('Error generating daily posts:', error);
   }
