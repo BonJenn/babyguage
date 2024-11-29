@@ -4,22 +4,32 @@ import { ObjectId } from 'mongodb';
 
 export class BlogService {
   private static async getCollection() {
+    console.log('Getting MongoDB collection...');
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
+    console.log('Database connected, collection name:', 'blogPosts');
     return db.collection('blogPosts');
   }
 
   static async createPost(post: BlogPost) {
+    console.log('Creating post in MongoDB:', post.title);
     const collection = await this.getCollection();
-    const result = await collection.insertOne({
-      ...post,
-      _id: new ObjectId(),
-      publishDate: new Date(post.publishDate)
-    });
-    return result;
+    try {
+      const result = await collection.insertOne({
+        ...post,
+        _id: new ObjectId(),
+        publishDate: new Date(post.publishDate)
+      });
+      console.log('Post created successfully, ID:', result.insertedId);
+      return result;
+    } catch (error) {
+      console.error('Error creating post in MongoDB:', error);
+      throw error;
+    }
   }
 
   static async getPosts(limit = 12): Promise<BlogPost[]> {
+    console.log('Fetching posts from MongoDB, limit:', limit);
     const collection = await this.getCollection();
     const posts = await collection
       .find({})
@@ -27,6 +37,7 @@ export class BlogService {
       .limit(limit)
       .toArray();
 
+    console.log(`Found ${posts.length} posts`);
     return posts.map(post => ({
       id: post._id.toString(),
       title: post.title,
