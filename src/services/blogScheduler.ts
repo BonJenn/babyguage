@@ -1,5 +1,4 @@
 import { generateBlogPost } from './blogGenerator';
-import { BlogService } from './blogService';
 
 const topics = [
   "Early Pregnancy Symptoms",
