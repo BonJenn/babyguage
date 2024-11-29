@@ -5,14 +5,14 @@ export async function GET(request: Request) {
   
   try {
     const authHeader = request.headers.get('Authorization');
-    console.log('Cron received auth:', authHeader ? 'Present' : 'Missing');
+    console.log('Cron received auth header:', authHeader?.slice(0, 20) + '...');
     
     if (!process.env.CRON_SECRET) {
-      throw new Error('CRON_SECRET not configured');
+      return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 401 });
     }
 
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      throw new Error('Invalid authorization');
+      return NextResponse.json({ error: 'Invalid authorization' }, { status: 401 });
     }
 
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
@@ -22,16 +22,19 @@ export async function GET(request: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.CRON_SECRET}`
+        'Authorization': authHeader
       }
     });
 
     const responseText = await response.text();
     console.log('Response status:', response.status);
-    console.log('Response text:', responseText);
+    console.log('Response body:', responseText.slice(0, 200));
 
     if (!response.ok) {
-      throw new Error(`Failed to trigger post generation: ${response.status} ${responseText}`);
+      return NextResponse.json({ 
+        error: `Failed to trigger post generation: ${response.status}`,
+        details: responseText
+      }, { status: response.status });
     }
 
     return NextResponse.json({ success: true });
