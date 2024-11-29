@@ -4,45 +4,42 @@ export async function GET(request: Request) {
   console.log('Cron job started:', new Date().toISOString());
   
   try {
-    // Verify the request is from Vercel
     const authHeader = request.headers.get('Authorization');
-    console.log('Received auth header:', authHeader?.substring(0, 10) + '...');
+    console.log('Cron received auth:', authHeader ? 'Present' : 'Missing');
     
     if (!process.env.CRON_SECRET) {
-      console.error('CRON_SECRET not configured');
-      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+      throw new Error('CRON_SECRET not configured');
     }
 
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      console.error('Unauthorized cron attempt');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      throw new Error('Invalid authorization');
     }
 
-    // Make POST request to generate-daily-post endpoint
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-    console.log('Making request to:', baseUrl);
+    console.log('Making request to:', `${baseUrl}/api/generate-daily-post`);
 
     const response = await fetch(`${baseUrl}/api/generate-daily-post`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': authHeader
+        'Authorization': `Bearer ${process.env.CRON_SECRET}`
       }
     });
 
+    const responseText = await response.text();
+    console.log('Response status:', response.status);
+    console.log('Response text:', responseText);
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Response not OK:', response.status, errorText);
-      throw new Error(`Failed to trigger post generation: ${response.status} ${response.statusText}`);
+      throw new Error(`Failed to trigger post generation: ${response.status} ${responseText}`);
     }
 
-    return NextResponse.json({ 
-      message: 'Post generation triggered successfully',
-      timestamp: new Date().toISOString()
-    });
+    return NextResponse.json({ success: true });
 
   } catch (error) {
     console.error('Cron error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
