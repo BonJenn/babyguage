@@ -16,12 +16,18 @@ export async function generateDailyPosts() {
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
     console.log('Selected topic:', randomTopic);
     
-    const post = await generateBlogPost(randomTopic);
-    console.log('Post generated, saving to database...');
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Operation timed out')), 8000);
+    });
+
+    const post = await Promise.race([
+      generateBlogPost(randomTopic),
+      timeoutPromise
+    ]);
+
+    console.log('Post generated successfully:', post.title);
+    return post;
     
-    await BlogService.createPost(post);
-    
-    console.log('Post saved successfully:', post.title);
   } catch (error) {
     console.error('Error generating daily post:', error);
     throw error;

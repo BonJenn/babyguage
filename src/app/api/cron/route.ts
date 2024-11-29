@@ -12,19 +12,19 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    console.log('Starting post generation...');
-    await generateDailyPosts();
-    console.log('Posts generated successfully');
-    
+    // Start the post generation in the background
+    generateDailyPosts().catch(error => {
+      console.error('Background post generation failed:', error);
+    });
+
+    // Return success immediately
     return NextResponse.json({ 
-      success: true,
+      message: 'Post generation started',
       timestamp: new Date().toISOString()
     });
+
   } catch (error) {
-    console.error('Cron job failed:', error);
-    return NextResponse.json({ 
-      error: 'Failed to generate posts',
-      details: error instanceof Error ? error.message : String(error)
-    }, { status: 500 });
+    console.error('Cron error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
