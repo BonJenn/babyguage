@@ -7,8 +7,17 @@ export async function POST(request: Request) {
   try {
     // Verify the request
     const authHeader = request.headers.get('Authorization');
+    console.log('Generate-daily-post received auth:', authHeader?.substring(0, 10) + '...');
+
+    if (!process.env.CRON_SECRET) {
+      console.error('CRON_SECRET not configured in generate-daily-post');
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
+
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       console.error('Unauthorized post generation attempt');
+      console.error('Expected:', `Bearer ${process.env.CRON_SECRET?.substring(0, 10)}...`);
+      console.error('Received:', authHeader);
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
