@@ -15,10 +15,10 @@ export async function GET(request: Request) {
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
     const response = await fetch(`${baseUrl}/api/generate-daily-post`, {
       method: 'POST',
-      headers: new Headers({
+      headers: {
         'Content-Type': 'application/json',
-        'Authorization': authHeader
-      })
+        'Authorization': `Bearer ${process.env.CRON_SECRET}`
+      }
     });
 
     if (!response.ok) {

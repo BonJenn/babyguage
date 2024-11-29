@@ -6,8 +6,8 @@ export const maxDuration = 300; // 5 minutes
 export async function POST(request: Request) {
   try {
     // Verify the request
-    const cronSecret = request.headers.get('x-cron-secret');
-    if (cronSecret !== process.env.CRON_SECRET) {
+    const authHeader = request.headers.get('Authorization');
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       console.error('Unauthorized post generation attempt');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
