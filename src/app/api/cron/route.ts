@@ -17,7 +17,7 @@ export async function GET(request: Request) {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json',
-        'x-cron-secret': process.env.CRON_SECRET || ''
+        'Authorization': authHeader
       })
     });
 
