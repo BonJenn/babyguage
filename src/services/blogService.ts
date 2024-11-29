@@ -4,11 +4,17 @@ import { ObjectId } from 'mongodb';
 
 export class BlogService {
   private static async getCollection() {
-    console.log('Getting MongoDB collection...');
-    const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
-    console.log('Database connected, collection name:', 'blogPosts');
-    return db.collection('blogPosts');
+    try {
+      console.log('Getting MongoDB collection...');
+      const client = await clientPromise;
+      const dbName = process.env.MONGODB_DB || 'babyguage';
+      const db = client.db(dbName);
+      console.log('Database connected:', dbName);
+      return db.collection('blogPosts');
+    } catch (error) {
+      console.error('Failed to connect to MongoDB:', error);
+      throw error;
+    }
   }
 
   static async createPost(post: BlogPost) {
