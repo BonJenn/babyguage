@@ -12,7 +12,8 @@ export async function GET(request: Request) {
     }
 
     // Make POST request to generate-daily-post endpoint
-    const response = await fetch(`${process.env.VERCEL_URL}/api/generate-daily-post`, {
+    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/generate-daily-post`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
