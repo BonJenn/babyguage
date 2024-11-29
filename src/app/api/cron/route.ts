@@ -17,12 +17,13 @@ export async function GET(request: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.CRON_SECRET}`
+        'x-cron-secret': process.env.CRON_SECRET
       }
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to trigger post generation: ${response.statusText}`);
+      const errorText = await response.text();
+      throw new Error(`Failed to trigger post generation: ${response.statusText} - ${errorText}`);
     }
 
     return NextResponse.json({ 
