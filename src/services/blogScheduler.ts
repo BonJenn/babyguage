@@ -7,22 +7,26 @@ const topics = [
   "Ovulation Tracking Methods",
   "Natural Fertility Boosters",
   "Understanding Your Cycle",
-  // Add more topics...
 ];
 
 export async function generateDailyPosts() {
   try {
-    // Generate 1 post
-    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-    const post = await generateBlogPost(randomTopic);
+    console.log('Starting post generation:', new Date().toISOString());
     
-    // Save to database
+    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+    console.log('Selected topic:', randomTopic);
+    
+    const post = await generateBlogPost(randomTopic);
+    console.log('Post generated, saving to database...');
+    
     await prisma.blogPost.create({
       data: post
     });
     
-    console.log(`Generated post: ${post.title}`);
+    console.log('Post saved successfully:', post.title);
   } catch (error) {
-    console.error('Error generating daily posts:', error);
+    console.error('Error generating daily post:', error);
+    // You might want to add error reporting here (e.g., Sentry)
+    throw error;
   }
 }
