@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { BlogPost } from '../types/blog';
 import clientPromise from '../lib/mongodb';
 
