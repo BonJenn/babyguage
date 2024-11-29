@@ -1,5 +1,5 @@
 import { generateBlogPost } from './blogGenerator';
-import { prisma } from '../lib/prisma';
+import { BlogService } from './blogService';
 
 const topics = [
   "Early Pregnancy Symptoms",
@@ -19,14 +19,11 @@ export async function generateDailyPosts() {
     const post = await generateBlogPost(randomTopic);
     console.log('Post generated, saving to database...');
     
-    await prisma.blogPost.create({
-      data: post
-    });
+    await BlogService.createPost(post);
     
     console.log('Post saved successfully:', post.title);
   } catch (error) {
     console.error('Error generating daily post:', error);
-    // You might want to add error reporting here (e.g., Sentry)
     throw error;
   }
 }

@@ -1,36 +1,22 @@
 import { MongoClient } from 'mongodb';
 import { config } from 'dotenv';
-import { resolve } from 'path';
 
-// Load environment variables with explicit path
+if (!process.env.MONGODB_URI) {
+  throw new Error('Please add your Mongo URI to environment variables');
+}
+
 const result = config({ path: resolve(process.cwd(), '.env.local') });
-
-// Debug logging
-console.log('Environment loading result:', result);
-console.log('Current working directory:', process.cwd());
-console.log('MongoDB URI:', process.env.MONGODB_URI ? 'Found' : 'Not found');
-console.log('MongoDB DB:', process.env.MONGODB_DB ? 'Found' : 'Not found');
-
-// Ensure environment variables are loaded
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB;
-
-if (!uri) {
-  console.error('Environment variables:', process.env);
-  throw new Error('MongoDB URI not found in environment variables');
-}
-
-if (!dbName) {
-  throw new Error('MongoDB database name not found in environment variables');
-}
-
 const options = {};
+console.log('Environment loading result:', result);
 
 let client;
 let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === 'development') {
-  const globalWithMongo = global as typeof globalThis & {
+  // In development mode, use a global variable so that the value
+  // is preserved across module reloads caused by HMR (Hot Module Replacement).
+  let globalWithMongo = global as typeof globalThis & {
     _mongoClientPromise?: Promise<MongoClient>;
   };
 
@@ -40,6 +26,7 @@ if (process.env.NODE_ENV === 'development') {
   }
   clientPromise = globalWithMongo._mongoClientPromise;
 } else {
+  // In production mode, it's best to not use a global variable.
   client = new MongoClient(uri, options);
   clientPromise = client.connect();
 }

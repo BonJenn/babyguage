@@ -1,6 +1,6 @@
-import clientPromise from '../lib/mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { BlogPost } from '../types/blog';
-import { ObjectId } from 'mongodb';
+import clientPromise from '../lib/mongodb';
 
 export class BlogService {
   private static async getCollection() {
@@ -9,10 +9,10 @@ export class BlogService {
       const client = await clientPromise;
       const dbName = process.env.MONGODB_DB || 'babyguage';
       const db = client.db(dbName);
-      console.log('Database connected:', dbName);
+      console.log('Database connected, collection name:', 'blogPosts');
       return db.collection('blogPosts');
     } catch (error) {
-      console.error('Failed to connect to MongoDB:', error);
+      console.error('Error connecting to MongoDB:', error);
       throw error;
     }
   }
@@ -32,6 +32,32 @@ export class BlogService {
       console.error('Error creating post in MongoDB:', error);
       throw error;
     }
+  }
+
+  static async getPostBySlug(slug: string): Promise<BlogPost | null> {
+    console.log('Fetching post by slug:', slug);
+    const collection = await this.getCollection();
+    const post = await collection.findOne({ slug });
+    
+    if (!post) {
+      console.log('Post not found for slug:', slug);
+      return null;
+    }
+
+    console.log('Post found:', post.title);
+    return {
+      id: post._id.toString(),
+      title: post.title,
+      slug: post.slug,
+      content: post.content,
+      excerpt: post.excerpt,
+      coverImage: post.coverImage,
+      publishDate: post.publishDate.toISOString(),
+      tags: post.tags,
+      seoTitle: post.seoTitle,
+      seoDescription: post.seoDescription,
+      seoKeywords: post.seoKeywords,
+    };
   }
 
   static async getPosts(limit = 12): Promise<BlogPost[]> {
@@ -59,28 +85,23 @@ export class BlogService {
     }));
   }
 
-  static async getPostBySlug(slug: string) {
-    const collection = await this.getCollection();
-    const decodedSlug = decodeURIComponent(slug);
-    console.log('Looking for post with slug:', decodedSlug);
-    const post = await collection.findOne({ slug: decodedSlug });
-    console.log('Found post:', post ? 'yes' : 'no');
-    return post;
-  }
-
   static async searchPosts(query: string): Promise<BlogPost[]> {
+    console.log('Searching posts with query:', query);
     const collection = await this.getCollection();
+    
+    const searchRegex = new RegExp(query, 'i');
     const posts = await collection
       .find({
         $or: [
-          { title: { $regex: query, $options: 'i' } },
-          { content: { $regex: query, $options: 'i' } },
-          { tags: { $in: [new RegExp(query, 'i')] } }
+          { title: searchRegex },
+          { content: searchRegex },
+          { tags: searchRegex }
         ]
       })
       .sort({ publishDate: -1 })
       .toArray();
 
+    console.log(`Found ${posts.length} posts matching query`);
     return posts.map(post => ({
       id: post._id.toString(),
       title: post.title,
