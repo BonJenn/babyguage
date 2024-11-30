@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   console.log('Cron job started:', new Date().toISOString());
+  console.log('Environment check:', {
+    hasCronSecret: !!process.env.CRON_SECRET,
+    envVars: Object.keys(process.env).filter(key => key.includes('CRON'))
+  });
   
   try {
     const authHeader = request.headers.get('Authorization');
@@ -45,7 +49,6 @@ export async function GET(request: Request) {
       const responseText = await response.text();
       console.error('Error response:', {
         status: response.status,
-        headers: Object.fromEntries(response.headers.entries()),
         body: responseText.substring(0, 200)
       });
       
