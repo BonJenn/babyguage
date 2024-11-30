@@ -2,41 +2,46 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   console.log('Cron job started:', new Date().toISOString());
-  console.log('Environment check:', {
-    hasCronSecret: !!process.env.CRON_SECRET,
-    envVars: Object.keys(process.env).filter(key => key.includes('CRON'))
-  });
   
   try {
+    // Debug environment variables
+    const envDebug = {
+      hasCronSecret: !!process.env.CRON_SECRET,
+      secretLength: process.env.CRON_SECRET?.length || 0,
+      vercelUrl: process.env.VERCEL_URL || 'not set',
+      nodeEnv: process.env.NODE_ENV
+    };
+    console.log('Environment debug:', envDebug);
+
+    // Debug headers safely
+    const headers = request.headers;
+    const debugHeaders = {
+      authorization: headers.get('authorization')?.substring(0, 20) + '...',
+      host: headers.get('host'),
+      'user-agent': headers.get('user-agent')
+    };
+    console.log('Request headers:', debugHeaders);
+
     const authHeader = request.headers.get('Authorization');
     const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
-    
-    console.log('Auth debug:', {
-      received: authHeader?.substring(0, 15),
-      expected: expectedAuth.substring(0, 15),
-      match: authHeader === expectedAuth,
-      headerLength: authHeader?.length,
-      expectedLength: expectedAuth.length
-    });
 
     if (!process.env.CRON_SECRET) {
-      return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 401 });
+      console.error('CRON_SECRET environment variable is not set');
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
     if (authHeader !== expectedAuth) {
-      return NextResponse.json({ 
-        error: 'Invalid authorization',
-        debug: {
-          receivedLength: authHeader?.length,
-          expectedLength: expectedAuth.length,
-          firstCharsMatch: authHeader?.substring(0, 10) === expectedAuth.substring(0, 10)
-        }
-      }, { status: 401 });
+      console.error('Authorization mismatch:', {
+        headerPresent: !!authHeader,
+        headerPrefix: authHeader?.substring(0, 7),
+        expectedPrefix: expectedAuth.substring(0, 7),
+        lengthMatch: authHeader?.length === expectedAuth.length
+      });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-    console.log('Making request to:', `${baseUrl}/api/generate-daily-post`);
-
+    
     const response = await fetch(`${baseUrl}/api/generate-daily-post`, {
       method: 'POST',
       headers: {
@@ -47,21 +52,17 @@ export async function GET(request: Request) {
 
     if (!response.ok) {
       const responseText = await response.text();
-      console.error('Error response:', {
+      console.error('Failed to generate post:', {
         status: response.status,
-        body: responseText.substring(0, 200)
+        responsePreview: responseText.substring(0, 100)
       });
-      
-      return NextResponse.json({ 
-        error: `Failed to trigger post generation: ${response.status}`,
-        details: responseText.substring(0, 500)
-      }, { status: response.status });
+      return NextResponse.json({ error: 'Post generation failed' }, { status: response.status });
     }
 
     return NextResponse.json({ success: true });
 
   } catch (error) {
-    console.error('Cron error:', error);
+    console.error('Cron execution error:', error);
     return NextResponse.json({ 
       error: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
