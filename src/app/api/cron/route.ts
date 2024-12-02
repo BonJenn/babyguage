@@ -9,44 +9,28 @@ export async function GET(request: Request) {
       hasCronSecret: !!process.env.CRON_SECRET,
       secretLength: process.env.CRON_SECRET?.length || 0,
       vercelUrl: process.env.VERCEL_URL || 'not set',
-      nodeEnv: process.env.NODE_ENV
+      nodeEnv: process.env.NODE_ENV,
+      fullUrl: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
     };
     console.log('Environment debug:', envDebug);
 
-    // Debug headers safely
-    const headers = request.headers;
-    const debugHeaders = {
-      authorization: headers.get('authorization')?.substring(0, 20) + '...',
-      host: headers.get('host'),
-      'user-agent': headers.get('user-agent')
-    };
-    console.log('Request headers:', debugHeaders);
-
     const authHeader = request.headers.get('Authorization');
-    const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
+    console.log('Received auth header:', authHeader ? `${authHeader.substring(0, 10)}...` : 'none');
 
     if (!process.env.CRON_SECRET) {
       console.error('CRON_SECRET environment variable is not set');
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
-    if (authHeader !== expectedAuth) {
-      console.error('Authorization mismatch:', {
-        headerPresent: !!authHeader,
-        headerPrefix: authHeader?.substring(0, 7),
-        expectedPrefix: expectedAuth.substring(0, 7),
-        lengthMatch: authHeader?.length === expectedAuth.length
-      });
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+    console.log('Making request to:', `${baseUrl}/api/generate-daily-post`);
     
+    // Make the request without auth check - we'll let the generate-daily-post endpoint handle auth
     const response = await fetch(`${baseUrl}/api/generate-daily-post`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': expectedAuth
+        'Authorization': authHeader || '' // Pass through the original auth header
       }
     });
 
@@ -54,12 +38,14 @@ export async function GET(request: Request) {
       const responseText = await response.text();
       console.error('Failed to generate post:', {
         status: response.status,
-        responsePreview: responseText.substring(0, 100)
+        responsePreview: responseText.substring(0, 100),
+        headers: Object.fromEntries([...response.headers])
       });
-      return NextResponse.json({ error: 'Post generation failed' }, { status: response.status });
+      return NextResponse.json({ error: 'Post generation failed', details: responseText }, { status: response.status });
     }
 
-    return NextResponse.json({ success: true });
+    const result = await response.json();
+    return NextResponse.json(result);
 
   } catch (error) {
     console.error('Cron execution error:', error);
