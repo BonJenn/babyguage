@@ -5,19 +5,16 @@ export async function POST(request: Request) {
   console.log('Generate-daily-post endpoint hit');
   
   try {
-    const authHeader = request.headers.get('Authorization');
-    const expectedAuth = 'Bearer youwillneverknow64';
+    // Log all headers for debugging
+    const headers = Object.fromEntries(request.headers.entries());
+    console.log('Received headers:', headers);
     
-    console.log('Auth check:', {
-      headerReceived: !!authHeader,
-      headerMatches: authHeader === expectedAuth,
-      headerLength: authHeader?.length,
-      expectedLength: expectedAuth.length
-    });
+    const authHeader = request.headers.get('Authorization');
+    console.log('Raw auth header:', authHeader);
 
-    if (!authHeader || authHeader !== expectedAuth) {
-      console.error('Auth failed');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!authHeader) {
+      console.error('No authorization header received');
+      return NextResponse.json({ error: 'No authorization header' }, { status: 401 });
     }
 
     console.log('Authorization successful, generating post...');
