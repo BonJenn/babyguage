@@ -6,39 +6,30 @@ export const maxDuration = 300;
 export async function POST(request: Request) {
   try {
     const authHeader = request.headers.get('Authorization');
-    const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
     
     console.log('Auth check:', {
       headerReceived: !!authHeader,
       secretConfigured: !!process.env.CRON_SECRET,
-      headerLength: authHeader?.length,
-      expectedLength: expectedAuth.length
+      headerStart: authHeader?.substring(0, 10),
+      secretStart: process.env.CRON_SECRET?.substring(0, 10)
     });
     
     if (!process.env.CRON_SECRET) {
-      return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 401 });
+      console.error('CRON_SECRET not configured in environment');
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
-    if (!authHeader || authHeader.trim() !== expectedAuth.trim()) {
-      return NextResponse.json({ error: 'Invalid authorization' }, { status: 401 });
+    if (!authHeader || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      console.error('Invalid or missing authorization header');
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     console.log('Authorization successful, starting post generation...');
     const post = await generateDailyPosts();
-    console.log('Post generated:', post.title);
-
-    return NextResponse.json({ 
-      success: true,
-      post: {
-        title: post.title,
-        slug: post.slug
-      }
-    });
+    return NextResponse.json({ success: true, post });
 
   } catch (error) {
     console.error('Generate-daily-post error:', error);
-    return NextResponse.json({ 
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
