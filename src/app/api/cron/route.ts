@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { generateDailyPosts } from '../../../services/blogScheduler';
 import { BlogPost } from '../../../types/blog';
 
-export const maxDuration = 900;
+export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     console.log('Cron job started:', new Date().toISOString());
     
     const timeoutPromise = new Promise<BlogPost>((_, reject) => {
-      setTimeout(() => reject(new Error('Function timeout')), 840000);
+      setTimeout(() => reject(new Error('Function timeout')), 270000);
     });
 
     const post = await Promise.race<BlogPost>([
