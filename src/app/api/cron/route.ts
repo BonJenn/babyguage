@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { generateDailyPosts } from '../../../services/blogScheduler';
+import { BlogPost } from '../../../types/blog';
 
-export const maxDuration = 900; // Set maximum duration to 900 seconds (15 minutes)
+export const maxDuration = 900;
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  // Verify the request is from Vercel Cron
   const authHeader = request.headers.get('Authorization');
   
   if (process.env.VERCEL_ENV === 'production' && (!authHeader || !authHeader.includes('Bearer'))) {
@@ -16,12 +16,11 @@ export async function GET(request: Request) {
   try {
     console.log('Cron job started:', new Date().toISOString());
     
-    // Set a longer timeout for the generateDailyPosts function
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Function timeout')), 840000); // 14 minutes
+    const timeoutPromise = new Promise<BlogPost>((_, reject) => {
+      setTimeout(() => reject(new Error('Function timeout')), 840000);
     });
 
-    const post = await Promise.race([
+    const post = await Promise.race<BlogPost>([
       generateDailyPosts(),
       timeoutPromise
     ]);
