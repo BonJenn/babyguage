@@ -7,7 +7,6 @@ export async function GET(_request: Request) {
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
     console.log('Making request to:', `${baseUrl}/api/generate-daily-post`);
     
-    // Test request with minimal headers
     const response = await fetch(`${baseUrl}/api/generate-daily-post`, {
       method: 'POST',
       headers: {
@@ -16,10 +15,11 @@ export async function GET(_request: Request) {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
+      const responseText = await response.text();
       console.error('Response status:', response.status);
       console.error('Response headers:', Object.fromEntries(response.headers.entries()));
-      throw new Error(`Failed to generate post: ${response.status}`);
+      console.error('Response body:', responseText);
+      throw new Error(`Failed to generate post: ${response.status}. Response: ${responseText}`);
     }
 
     const result = await response.json();

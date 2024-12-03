@@ -5,7 +5,6 @@ export async function POST(request: Request) {
   console.log('Generate-daily-post endpoint hit');
   
   try {
-    // Log all headers for debugging
     const headers = Object.fromEntries(request.headers.entries());
     console.log('Received headers:', headers);
     
