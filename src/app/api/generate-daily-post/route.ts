@@ -6,14 +6,20 @@ export const maxDuration = 300;
 export async function POST(request: Request) {
   try {
     const authHeader = request.headers.get('Authorization');
-    console.log('Generate-daily-post auth header:', authHeader?.slice(0, 20) + '...');
-    console.log('Expected auth:', `Bearer ${process.env.CRON_SECRET?.slice(0, 20)}...`);
+    const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
+    
+    console.log('Auth check:', {
+      headerReceived: !!authHeader,
+      secretConfigured: !!process.env.CRON_SECRET,
+      headerLength: authHeader?.length,
+      expectedLength: expectedAuth.length
+    });
     
     if (!process.env.CRON_SECRET) {
       return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 401 });
     }
 
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    if (!authHeader || authHeader.trim() !== expectedAuth.trim()) {
       return NextResponse.json({ error: 'Invalid authorization' }, { status: 401 });
     }
 
