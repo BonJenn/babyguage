@@ -5,18 +5,18 @@ export async function POST(request: Request) {
   console.log('Generate-daily-post endpoint hit');
   
   try {
-    const headerObj: Record<string, string> = {};
-    request.headers.forEach((value, key) => {
-      headerObj[key] = value;
-    });
-    console.log('Received headers:', headerObj);
-    
     const authHeader = request.headers.get('Authorization');
     console.log('Raw auth header:', authHeader);
 
-    if (!authHeader) {
-      console.error('No authorization header received');
-      return NextResponse.json({ error: 'No authorization header' }, { status: 401 });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('Invalid authorization header');
+      return NextResponse.json({ error: 'Invalid authorization header' }, { status: 401 });
+    }
+
+    const token = authHeader.split(' ')[1];
+    if (token !== 'test') {
+      console.error('Invalid token');
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
     console.log('Authorization successful, generating post...');

@@ -10,21 +10,14 @@ export async function GET(_request: Request) {
     const response = await fetch(`${baseUrl}/api/generate-daily-post`, {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer test'
+        'Authorization': 'Bearer test',
+        'Content-Type': 'application/json'
       }
     });
 
     if (!response.ok) {
       const responseText = await response.text();
       console.error('Response status:', response.status);
-      
-      // Convert headers to plain object safely
-      const headerObj: Record<string, string> = {};
-      response.headers.forEach((value, key) => {
-        headerObj[key] = value;
-      });
-      console.error('Response headers:', headerObj);
-      
       console.error('Response body:', responseText);
       throw new Error(`Failed to generate post: ${response.status}. Response: ${responseText}`);
     }
