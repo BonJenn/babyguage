@@ -14,15 +14,40 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
       messages: [
         {
           role: "system",
-          content: "You are a professional writer specializing in pregnancy and fertility topics. Write content using markdown formatting. Use ## for main sections and ### for subsections. Each section should have a clear heading followed by well-structured paragraphs. Use proper markdown for lists, emphasis, and other formatting."
+          content: `You are a professional writer specializing in pregnancy and fertility topics. Write well-structured content with clear sections. 
+          
+          IMPORTANT - Follow this exact format:
+          1. Start each main section with "## " (two hashtags and a space) followed by the section title
+          2. Start each subsection with "### " (three hashtags and a space) followed by the subsection title
+          3. Use regular paragraphs for content
+          4. Use bullet points when appropriate
+          5. Every post must have at least 3 main sections
+          6. Ensure each section and subsection title is on its own line
+          7. Add a blank line after each heading`
         },
         {
           role: "user",
-          content: `Write a comprehensive blog post about ${topic}. Structure the content with clear sections using markdown headings (## and ###) and ensure proper paragraph spacing.`
+          content: `Write a comprehensive blog post about ${topic}. Structure the content with clear sections and ensure proper paragraph spacing.`
         }
       ],
       temperature: 0.7,
     });
+
+    const content = contentResponse.choices[0].message.content || "";
+    
+    // Add logging to check content structure
+    console.log('Generated content structure check:', {
+      topic,
+      sectionCount: (content.match(/## /g) || []).length,
+      subsectionCount: (content.match(/### /g) || []).length,
+      firstFewLines: content.split('\n').slice(0, 5),
+    });
+
+    // Validate content structure
+    if (!content.includes('## ')) {
+      console.error('Content missing required section markers for topic:', topic);
+      throw new Error('Generated content missing required structure');
+    }
 
     // Generate SEO metadata
     const seoResponse = await openai.chat.completions.create({
@@ -50,8 +75,9 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
       title: seoData.title,
       slug: slugify(seoData.title, { 
         lower: true,
-        strict: true, // Removes special characters
-        remove: /[*+~.()'"!:@]/g // Remove additional special characters
+        strict: true,
+        trim: true,
+        remove: /[*+~.()'"!:@]/g
       }),
       content: contentResponse.choices[0].message.content || "",
       excerpt: seoData.description,
