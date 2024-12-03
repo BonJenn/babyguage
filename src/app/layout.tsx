@@ -22,27 +22,20 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
-    images: [
-      {
-        url: siteConfig.ogImage,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.name,
-      },
-    ],
+    images: [siteConfig.ogImage],
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
-    creator: siteConfig.links.twitter,
+    creator: siteConfig.links?.twitter || "@babyguage"
   },
   robots: {
     index: true,
-    follow: true,
-  },
-}
+    follow: true
+  }
+};
 
 export default function RootLayout({
   children,

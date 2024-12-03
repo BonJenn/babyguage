@@ -81,7 +81,7 @@ export class BlogService {
       tags: post.tags,
       seoTitle: post.seoTitle,
       seoDescription: post.seoDescription,
-      seoKeywords: post.seoKeywords,
+      seoKeywords: post.seoKeywords
     }));
   }
 
