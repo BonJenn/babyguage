@@ -22,7 +22,11 @@ export async function GET(_request: Request) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Response headers:', Object.fromEntries(response.headers.entries()));
+      const headers: Record<string, string> = {};
+      response.headers.forEach((value, key) => {
+        headers[key] = value;
+      });
+      console.error('Response headers:', headers);
       throw new Error(`Failed to generate post: ${response.status}. Response: ${errorText}`);
     }
 
