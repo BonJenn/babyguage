@@ -69,7 +69,13 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
     });
 
     // Save to MongoDB
-    await BlogService.createPost(blogPost);
+    const result = await BlogService.createPost(blogPost);
+    console.log('Blog post saved to database:', {
+      id: result.insertedId,
+      title: blogPost.title,
+      slug: blogPost.slug,
+      publishDate: blogPost.publishDate
+    });
     return blogPost;
   } catch (error) {
     console.error('Error generating blog post:', error);
@@ -144,3 +150,5 @@ async function generateUniqueTopic(): Promise<string> {
 
 // Export it so we can use it in the API route
 export { generateUniqueTopic };
+
+export const dynamic = 'force-dynamic';

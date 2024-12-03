@@ -2,6 +2,7 @@ import { BlogService } from '../../services/blogService';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import Image from 'next/image';
+import { siteConfig } from '../../config/site'
 
 export const metadata: Metadata = {
   title: 'Pregnancy & Fertility Blog | BabyGauge',
@@ -10,10 +11,12 @@ export const metadata: Metadata = {
 
 export default async function BlogPage() {
   const posts = await BlogService.getPosts(12);
+  console.log('Fetched posts:', posts);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-5xl font-bold mb-12 text-gray-800">Pregnancy & Fertility Blog</h1>
+      <h1 className="text-5xl font-bold mb-12 text-gray-800">{siteConfig.name}</h1>
+      <p className="text-xl mb-8 text-gray-600">{siteConfig.description}</p>
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
           <Link href={`/blog/${post.slug}`} key={post.id} className="group">
