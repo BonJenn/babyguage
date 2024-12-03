@@ -14,11 +14,11 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
       messages: [
         {
           role: "system",
-          content: "You are a professional writer specializing in pregnancy and fertility topics. Write in a clear, engaging style with proper headings and SEO optimization."
+          content: "You are a professional writer specializing in pregnancy and fertility topics. Write content using markdown formatting. Use ## for main sections and ### for subsections. Each section should have a clear heading followed by well-structured paragraphs. Use proper markdown for lists, emphasis, and other formatting."
         },
         {
           role: "user",
-          content: `Write a comprehensive blog post about ${topic}. Include H2 and H3 headings, and format in markdown.`
+          content: `Write a comprehensive blog post about ${topic}. Structure the content with clear sections using markdown headings (## and ###) and ensure proper paragraph spacing.`
         }
       ],
       temperature: 0.7,
@@ -150,5 +150,3 @@ async function generateUniqueTopic(): Promise<string> {
 
 // Export it so we can use it in the API route
 export { generateUniqueTopic };
-
-export const dynamic = 'force-dynamic';

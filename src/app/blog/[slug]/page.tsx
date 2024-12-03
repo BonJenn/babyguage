@@ -78,11 +78,7 @@ export default async function BlogPostPage({ params, searchParams: _searchParams
           ))}
         </div>
 
-        <div className="prose prose-lg max-w-none prose-headings:text-gray-800 
-                      prose-p:text-gray-600 prose-p:leading-relaxed prose-p:mb-8
-                      prose-h2:text-3xl prose-h2:font-semibold prose-h2:mt-12 prose-h2:mb-6
-                      prose-h3:text-2xl prose-h3:font-medium prose-h3:mt-8 prose-h3:mb-4
-                      prose-ul:my-6 prose-li:text-gray-600">
+        <div className="prose prose-lg max-w-none">
           <ReactMarkdown>{post.content}</ReactMarkdown>
         </div>
       </article>
