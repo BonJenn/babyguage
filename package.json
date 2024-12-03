@@ -14,7 +14,8 @@
     "check-topics": "ts-node src/scripts/checkTopicDiversity.ts",
     "check-env": "tsx src/scripts/checkEnv.ts",
     "start-scheduler": "ts-node src/scripts/scheduler.ts",
-    "postinstall": "npx prisma generate"
+    "postinstall": "npx prisma generate",
+    "auto-posts": "tsx src/scripts/autoPostGenerator.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

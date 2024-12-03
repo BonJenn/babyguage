@@ -1,31 +1,29 @@
 import { NextResponse } from 'next/server';
+import { generateDailyPosts } from '../../../services/blogScheduler';
 
-export async function GET(_request: Request) {
-  console.log('Cron job started:', new Date().toISOString());
+export async function GET(request: Request) {
+  // Verify the request is from Vercel Cron
+  const authHeader = request.headers.get('Authorization');
   
+  if (process.env.VERCEL_ENV === 'production' && (!authHeader || !authHeader.includes('Bearer'))) {
+    console.log('Unauthorized cron attempt');
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
-    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-    console.log('Making request to:', `${baseUrl}/api/generate-daily-post`);
+    console.log('Cron job started:', new Date().toISOString());
+    const post = await generateDailyPosts();
+    console.log('Post generated successfully:', post.title);
     
-    const response = await fetch(`${baseUrl}/api/generate-daily-post`, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer test',
-        'Content-Type': 'application/json'
-      }
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Post generated successfully',
+      title: post.title 
     });
-
-    if (!response.ok) {
-      const responseText = await response.text();
-      console.error('Response status:', response.status);
-      console.error('Response body:', responseText);
-      throw new Error(`Failed to generate post: ${response.status}. Response: ${responseText}`);
-    }
-
-    const result = await response.json();
-    return NextResponse.json(result);
   } catch (error) {
     console.error('Cron error:', error);
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
+
+
