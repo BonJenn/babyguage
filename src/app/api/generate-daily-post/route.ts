@@ -5,8 +5,11 @@ export async function POST(request: Request) {
   console.log('Generate-daily-post endpoint hit');
   
   try {
-    const headers = Object.fromEntries(request.headers);
-    console.log('Received headers:', headers);
+    const headerObj: Record<string, string> = {};
+    request.headers.forEach((value, key) => {
+      headerObj[key] = value;
+    });
+    console.log('Received headers:', headerObj);
     
     const authHeader = request.headers.get('Authorization');
     console.log('Raw auth header:', authHeader);
