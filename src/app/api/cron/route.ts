@@ -11,8 +11,8 @@ export async function GET(_request: Request) {
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
     console.log('Making request to:', `${baseUrl}/api/generate-daily-post`);
     
-    const authHeader = `Bearer ${process.env.CRON_SECRET}`;
-    console.log('Using auth header (first 10 chars):', authHeader.substring(0, 10));
+    const authHeader = `Bearer youwillneverknow64`;
+    console.log('Auth header:', process.env.NODE_ENV === 'development' ? authHeader : '[REDACTED]');
 
     const response = await fetch(`${baseUrl}/api/generate-daily-post`, {
       method: 'POST',
@@ -24,10 +24,9 @@ export async function GET(_request: Request) {
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error('Response headers:', response.headers);
       console.error('Response status:', response.status);
-      console.error('Response status text:', response.statusText);
-      console.error('Response body:', errorText);
-      throw new Error(`Failed to generate post: ${response.status}. Response: ${errorText}`);
+      throw new Error(`Failed to generate post: ${response.status}. Response: ${errorText.substring(0, 100)}`);
     }
 
     const result = await response.json();
