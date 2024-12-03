@@ -17,10 +17,7 @@ export async function GET(_request: Request) {
     if (!response.ok) {
       const responseText = await response.text();
       console.error('Response status:', response.status);
-      console.error('Response headers:', [...response.headers].reduce((obj, [key, value]) => {
-        obj[key] = value;
-        return obj;
-      }, {} as Record<string, string>));
+      console.error('Response headers:', Object.fromEntries(response.headers));
       console.error('Response body:', responseText);
       throw new Error(`Failed to generate post: ${response.status}. Response: ${responseText}`);
     }
