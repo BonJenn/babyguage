@@ -17,7 +17,7 @@ export async function generateDailyPosts(): Promise<BlogPost> {
     console.log('Selected topic:', randomTopic);
     
     const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('Operation timed out')), 30000);
+      setTimeout(() => reject(new Error('Operation timed out')), 840000);
     });
 
     const post = await Promise.race([
