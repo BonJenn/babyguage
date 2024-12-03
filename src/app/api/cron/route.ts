@@ -26,7 +26,8 @@ export async function GET(_request: Request) {
       const errorText = await response.text();
       console.error('Response status:', response.status);
       console.error('Response status text:', response.statusText);
-      throw new Error(`Failed to generate post: ${response.status}`);
+      console.error('Response body:', errorText);
+      throw new Error(`Failed to generate post: ${response.status}. Response: ${errorText}`);
     }
 
     const result = await response.json();
