@@ -9,14 +9,12 @@ interface BlogSidebarProps {
 }
 
 export default function BlogSidebar({ suggestedPosts, popularTags, currentPostId }: BlogSidebarProps) {
-  // Filter out the current post from suggestions if it exists
   const filteredPosts = currentPostId 
     ? suggestedPosts.filter(post => post.id !== currentPostId)
     : suggestedPosts;
 
   return (
-    <aside className="w-full lg:w-80 space-y-8">
-      {/* Suggested Posts Section */}
+    <aside className="hidden lg:block w-80">
       <div className="bg-white rounded-xl shadow-sm p-6 sticky top-8">
         <h2 className="text-xl font-semibold mb-6 text-gray-800">Related Posts</h2>
         <div className="space-y-6">
@@ -59,26 +57,26 @@ export default function BlogSidebar({ suggestedPosts, popularTags, currentPostId
             </Link>
           ))}
         </div>
-      </div>
 
-      {/* Popular Tags Section */}
-      {popularTags && popularTags.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Popular Tags</h2>
-          <div className="flex flex-wrap gap-2">
-            {popularTags.map(tag => (
-              <Link
-                key={tag}
-                href={`/blog/tag/${encodeURIComponent(tag)}`}
-                className="text-sm px-3 py-1 bg-[#f5efe9] text-[#4a3f35] rounded-lg 
-                         hover:bg-[#e8d5c4] transition-colors duration-200"
-              >
-                {tag}
-              </Link>
-            ))}
+        {/* Popular Tags Section */}
+        {popularTags && popularTags.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Popular Tags</h2>
+            <div className="flex flex-wrap gap-2">
+              {popularTags.map(tag => (
+                <Link
+                  key={tag}
+                  href={`/blog/tag/${encodeURIComponent(tag)}`}
+                  className="text-sm px-3 py-1 bg-[#f5efe9] text-[#4a3f35] rounded-lg 
+                           hover:bg-[#e8d5c4] transition-colors duration-200"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </aside>
   );
 }
