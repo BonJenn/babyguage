@@ -3,21 +3,28 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import { siteConfig } from '../../config/site'
+import BlogSearch from '../../components/BlogSearch';
+import Pagination from '../../components/Pagination';
 
 export const metadata: Metadata = {
   title: 'Pregnancy & Fertility Blog | BabyGauge',
   description: 'Expert insights on pregnancy, fertility, and reproductive health.',
 };
 
-export default async function BlogPage() {
-  const posts = await BlogService.getPosts(12);
-  console.log('Fetched posts:', posts);
+export default async function BlogPage({ searchParams }: { searchParams: { page?: string } }) {
+  const page = Number(searchParams?.page) || 1;
+  const limit = 12;
+  const { posts, total } = await BlogService.getPosts(page, limit);
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-5xl font-bold mb-12 text-gray-800">{siteConfig.name}</h1>
       <p className="text-xl mb-8 text-gray-600">{siteConfig.description}</p>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      
+      <BlogSearch />
+      
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
         {posts.map((post) => (
           <Link href={`/blog/${post.slug}`} key={post.id} className="group">
             <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
@@ -48,6 +55,14 @@ export default async function BlogPage() {
           </Link>
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          baseUrl="/blog"
+        />
+      )}
     </div>
   );
 }

@@ -97,7 +97,7 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
     // Save to MongoDB
     const result = await BlogService.createPost(blogPost);
     console.log('Blog post saved to database:', {
-      id: result.insertedId,
+      id: result.id,
       title: blogPost.title,
       slug: blogPost.slug,
       publishDate: blogPost.publishDate
