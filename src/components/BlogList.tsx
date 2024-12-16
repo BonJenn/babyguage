@@ -10,7 +10,7 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
           <Link href={`/blog/${post.slug}`}>
             <div className="relative h-48">
               <OptimizedImage
-                src={post.coverImage}
+                src={post.coverImage || '/images/default-blog-cover.jpg'}
                 alt={post.title}
                 className="object-cover w-full h-48"
               />

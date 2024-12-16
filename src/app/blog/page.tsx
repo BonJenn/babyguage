@@ -11,8 +11,17 @@ export const metadata: Metadata = {
   description: 'Expert insights on pregnancy, fertility, and reproductive health.',
 };
 
-export default async function BlogPage({ searchParams }: { searchParams: { page?: string } }) {
-  const page = Number(searchParams?.page) || 1;
+interface SearchParams {
+  page?: string;
+}
+
+interface PageProps {
+  searchParams: Promise<SearchParams>;
+}
+
+export default async function BlogPage({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  const page = Number(resolvedSearchParams.page) || 1;
   const limit = 12;
   const { posts, total } = await BlogService.getPosts(page, limit);
   const totalPages = Math.ceil(total / limit);

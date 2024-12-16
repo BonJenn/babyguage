@@ -140,7 +140,7 @@ async function generateAndStoreImage(topic: string): Promise<string> {
   } catch (error) {
     console.error('Error generating/storing image:', error);
     // Return a default image URL if generation fails
-    return 'https://your-default-image-url.jpg';
+    return 'https://res.cloudinary.com/your-cloud-name/image/upload/v1/blog-images/default-blog-image.jpg';
   }
 }
 

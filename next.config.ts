@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
       'res.cloudinary.com',
       'oaidalleapicontent.blob.core.windows.net'
     ],
+    unoptimized: true
   },
 };
 
