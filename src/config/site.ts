@@ -1,6 +1,6 @@
 export const siteConfig = {
-    name: "BabyGauge",
-    description: "Expert insights on pregnancy and fertility",
+    name: "Baby Gauge",
+    description: "Pregnancy probability calculator",
     url: "https://babyguage.com",
     ogImage: "https://babyguage.com/og.jpg",
     keywords: [

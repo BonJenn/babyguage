@@ -51,29 +51,31 @@ export default async function TagPage({ params, searchParams }: PageProps) {
             )}
           </div>
           
-          <aside className="lg:w-64 space-y-6">
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-xl font-semibold mb-4">Popular Tags</h2>
-              <div className="flex flex-wrap gap-2">
-                {posts.reduce((tags: string[], post) => {
-                  post.tags.forEach(tag => {
-                    if (!tags.includes(tag)) {
-                      tags.push(tag);
-                    }
-                  });
-                  return tags;
-                }, []).slice(0, 10).map((tag) => (
-                  <Link
-                    key={tag}
-                    href={`/blog/tag/${encodeURIComponent(tag)}`}
-                    className="bg-[#f5efe9] text-[#4a3f35] px-3 py-1 rounded-lg text-sm hover:bg-[#e8d5c4] transition-colors"
-                  >
-                    {tag}
-                  </Link>
-                ))}
+          <div className="hidden lg:block">
+            <div className="sticky top-20 w-64 h-[calc(100vh-5rem)]">
+              <div className="bg-white rounded-xl shadow-sm p-6 overflow-y-auto max-h-full">
+                <h2 className="text-xl font-semibold mb-4">Popular Tags</h2>
+                <div className="flex flex-wrap gap-2">
+                  {posts.reduce((tags: string[], post) => {
+                    post.tags.forEach(tag => {
+                      if (!tags.includes(tag)) {
+                        tags.push(tag);
+                      }
+                    });
+                    return tags;
+                  }, []).slice(0, 10).map((tag) => (
+                    <Link
+                      key={tag}
+                      href={`/blog/tag/${encodeURIComponent(tag)}`}
+                      className="bg-[#f5efe9] text-[#4a3f35] px-3 py-1 rounded-lg text-sm hover:bg-[#e8d5c4] transition-colors"
+                    >
+                      {tag}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
-          </aside>
+          </div>
         </div>
       </div>
     );
