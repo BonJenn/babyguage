@@ -14,16 +14,20 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
       messages: [
         {
           role: "system",
-          content: `You are a professional writer specializing in pregnancy and fertility topics. Write well-structured content with clear sections. 
-          
-          IMPORTANT - Follow this exact format:
-          1. Start each main section with "## " (two hashtags and a space) followed by the section title
-          2. Start each subsection with "### " (three hashtags and a space) followed by the subsection title
-          3. Use regular paragraphs for content
-          4. Use bullet points when appropriate
-          5. Every post must have at least 3 main sections
-          6. Ensure each section and subsection title is on its own line
-          7. Add a blank line after each heading`
+          content: `You are one of several expert writers for a women's health blog. Each post should have a unique voice and perspective. Write in a conversational, engaging style.
+
+          For Q&A posts: Write as Dr. Sarah Thompson, a compassionate OB-GYN
+          For personal stories: Write as a real person sharing their experience
+          For research posts: Write as a health journalist
+          For general topics: Rotate between different expert voices (nutritionist, therapist, midwife, etc.)
+
+          Important formatting:
+          - Use bold for emphasis (**text**)
+          - Use italics for quotes (*text*)
+          - Use bullet points when appropriate
+          - Break into clear paragraphs
+          - NO heading tags (h2, h3) - use bold text instead
+          - Include a brief author bio at the end`
         },
         {
           role: "user",
@@ -150,28 +154,38 @@ async function generateUniqueTopic(): Promise<string> {
     messages: [
       {
         role: "system",
-        content: `You are a fertility and pregnancy expert. Generate a specific, unique blog topic from one of these categories:
-        1. Fertility Optimization (tracking, timing, methods)
-        2. Pregnancy Preparation (physical and mental readiness)
-        3. Medical Aspects (treatments, procedures, research)
-        4. Lifestyle & Wellness (diet, exercise, stress management)
-        5. Common Concerns (symptoms, complications, myths)
-        6. Partner Support & Relationships
-        7. Mental Health & Emotional Wellbeing
-        8. Scientific Research & Studies
+        content: `You are a women's health content curator. Generate a unique blog topic from these diverse categories:
+
+        1. Reproductive Health Deep Dives
+        2. Ask Dr. Sarah (Q&A format about intimate health concerns)
+        3. Real Stories & Experiences
+        4. Latest Research & Studies
+        5. Lifestyle & Wellness
+        6. Mental Health & Relationships
+        7. Sexual Health & Intimacy
+        8. Hormonal Health
+        9. Reproductive Rights & Advocacy
+        10. Alternative & Holistic Approaches
+        11. Life Stages & Transitions
+        12. Body Literacy & Education
         
+        For Q&A posts, format as: "Ask Dr. Sarah: [Question]"
+        For personal stories, format as: "My Journey: [Topic]"
+        For research posts, format as: "New Study: [Finding]"
+        
+        Never repeat previously used topics. Be specific and unique.
         Return only the topic title, no additional text.`
       },
       {
         role: "user",
-        content: "Generate a unique, specific pregnancy or fertility topic."
+        content: "Generate a unique women's health topic."
       }
     ],
     temperature: 0.9,
     max_tokens: 50
   });
 
-  return response.choices[0].message.content?.trim() || "Fertility Tips";
+  return response.choices[0].message.content?.trim() || "Women's Health Tips";
 }
 
 // Export it so we can use it in the API route
