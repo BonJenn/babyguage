@@ -29,14 +29,34 @@ type Result = {
   explanation: string;
 };
 
-const inputClasses = "input-seamless";
-const labelClasses = "question-label";
-const buttonClasses = "w-full bg-[#8b7355] hover:bg-[#6d5a43] text-white px-6 py-4 rounded-xl text-xl font-medium transition duration-300 shadow-lg hover:shadow-xl";
-const backButtonClasses = "w-full mt-2 bg-transparent border-2 border-[#8b7355] text-[#8b7355] hover:bg-[#8b7355] hover:text-white px-6 py-4 rounded-xl text-xl font-medium transition duration-300";
+const inputClasses = `
+  w-full px-6 py-4 
+  text-xl font-semibold text-pink-600 
+  bg-white/40 
+  border-none
+  rounded-xl
+  shadow-inner
+  placeholder:text-pink-300/60
+  focus:outline-none focus:ring-4 focus:ring-pink-100
+  transition-all duration-200
+  backdrop-blur-sm
+`;
+
+const labelClasses = `
+  block 
+  text-lg font-medium 
+  bg-gradient-to-r from-pink-600 to-purple-600 
+  bg-clip-text text-transparent 
+  mb-2
+`;
+
+const buttonClasses = "w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-6 py-4 rounded-xl text-xl font-medium transition duration-300 shadow-lg hover:shadow-xl";
+
+const backButtonClasses = "w-full mt-2 bg-transparent border-2 border-pink-400 text-pink-600 hover:bg-pink-50 px-6 py-4 rounded-xl text-xl font-medium transition duration-300";
 
 const LoadingBar = () => (
-  <div className="fixed top-0 left-0 w-full h-1 bg-[#e8d5c4]">
-    <div className="h-full bg-[#8b7355] animate-loading-bar"></div>
+  <div className="fixed top-0 left-0 w-full h-1 bg-pink-100">
+    <div className="h-full bg-gradient-to-r from-pink-500 to-purple-500 animate-loading-bar"></div>
   </div>
 );
 
@@ -60,6 +80,13 @@ export default function PregnancyCalculator() {
   });
   const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (field: keyof FormData, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -91,38 +118,41 @@ export default function PregnancyCalculator() {
     switch (step) {
       case 1:
         return (
-          <div className="question-container">
+          <div className="space-y-8 pt-8">
             <label className={labelClasses}>
               What is your age?
               <input
                 type="number"
+                id="age"
+                value={formData.age || ''}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  age: parseInt(e.target.value) || 0
+                }))}
                 className={inputClasses}
-                value={formData.age === 0 ? '' : formData.age}
-                onChange={(e) => {
-                  const value = e.target.value === '' ? 0 : parseInt(e.target.value);
-                  setFormData({ ...formData, age: value });
+                placeholder="Type your age..."
+                min="0"
+                max="100"
+                style={{
+                  WebkitAppearance: 'none',
+                  MozAppearance: 'textfield'
                 }}
-                onBlur={() => {
-                  if (formData.age < 18 && formData.age !== 0) {
-                    alert("You must be 18 or older to use this calculator.");
-                    setFormData({ ...formData, age: 0 });
-                  }
-                }}
-                placeholder="Enter your age"
               />
             </label>
-            <button
-              onClick={() => {
-                if (formData.age < 18) {
-                  alert("You must be 18 or older to use this calculator.");
-                  return;
-                }
-                setStep(2);
-              }}
-              className={buttonClasses}
-            >
-              Next
-            </button>
+            <div className="pt-4">
+              <button
+                onClick={() => {
+                  if (formData.age < 18) {
+                    alert("You must be 18 or older to use this calculator.");
+                    return;
+                  }
+                  setStep(2);
+                }}
+                className={buttonClasses}
+              >
+                Next
+              </button>
+            </div>
           </div>
         );
 
@@ -455,19 +485,25 @@ export default function PregnancyCalculator() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-8 bg-gradient-to-br from-white/30 via-white/20 to-transparent backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
-      <h1 className="text-4xl font-bold mb-8 text-[#4a3f35] tracking-tight">Pregnancy Probability Calculator</h1>
+    <div className="max-w-2xl mx-auto p-8 bg-gradient-to-br from-pink-50/90 via-white/80 to-purple-50/90 backdrop-blur-md rounded-2xl shadow-2xl border border-pink-100">
+      <h1 className="text-4xl font-bold mb-8 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent tracking-tight">
+        Pregnancy Probability Calculator
+      </h1>
       {loading && <LoadingBar />}
       {!result ? (
         renderQuestion()
       ) : (
         <div className="space-y-8 text-center">
-          <h2 className="text-2xl font-bold text-[#4a3f35]">Results</h2>
+          <h2 className="text-2xl font-bold text-gray-800">Results</h2>
           <div className="space-y-2">
-            <p className="text-6xl font-bold text-[#8b7355]">{result.percentage}%</p>
-            <p className="text-xl text-[#4a3f35]"><strong>Risk Level:</strong> {result.riskLevel}</p>
+            <p className="text-6xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+              {result.percentage}%
+            </p>
+            <p className="text-xl text-gray-700">
+              <strong>Risk Level:</strong> {result.riskLevel}
+            </p>
           </div>
-          <div className="text-left space-y-4 text-[#4a3f35]">
+          <div className="text-left space-y-4 text-gray-600">
             {result.explanation.split('. ').reduce((acc: string[], sentence: string, i: number) => {
               if (i < result.explanation.split('. ').length / 2) {
                 acc[0] = acc[0] ? acc[0] + '. ' + sentence : sentence;

@@ -143,4 +143,33 @@ export class BlogService {
 
     return posts.map(this.mapPostFromDB);
   }
+
+  static async getPostsByCategory(category: string, page = 1, limit = 12): Promise<{ posts: BlogPost[]; total: number }> {
+    console.log('Fetching posts by category:', category);
+    const collection = await this.getCollection();
+    const skip = (page - 1) * limit;
+    
+    const query = { 
+      tags: { 
+        $in: [
+          new RegExp(category, 'i')
+        ] 
+      }
+    };
+
+    const [posts, total] = await Promise.all([
+      collection
+        .find(query)
+        .sort({ publishDate: -1 })
+        .skip(skip)
+        .limit(limit)
+        .toArray(),
+      collection.countDocuments(query)
+    ]);
+
+    return {
+      posts: posts.map(this.mapPostFromDB),
+      total
+    };
+  }
 }

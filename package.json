@@ -18,6 +18,7 @@
     "auto-posts": "tsx src/scripts/autoPostGenerator.ts"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@prisma/client": "^5.22.0",
     "cloudinary": "^2.5.1",
     "dotenv": "^16.4.5",

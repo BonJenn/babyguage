@@ -2,16 +2,13 @@ import { ObjectId } from 'mongodb';
 
 export interface BlogPost {
   id: string;
-  title: string;
   slug: string;
-  content: string;
+  title: string;
   excerpt: string;
-  coverImage: string | null;
+  content: string;
+  coverImage?: string;
   publishDate: string;
   tags: string[];
-  seoTitle: string;
-  seoDescription: string;
-  seoKeywords: string[];
 }
 
 export interface BlogPostDocument {

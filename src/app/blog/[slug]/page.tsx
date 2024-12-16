@@ -55,60 +55,64 @@ export default async function BlogPostPage({ params, searchParams: _searchParams
 
     // Get suggested posts based on current post's tags
     const suggestedPosts = await BlogService.getSuggestedPosts(post.id, post.tags);
+    
+    // Get all unique tags from suggested posts and current post
+    const allTags = Array.from(new Set([
+      ...post.tags,
+      ...suggestedPosts.reduce((tags: string[], post) => {
+        return [...tags, ...post.tags];
+      }, [])
+    ]));
 
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col lg:flex-row gap-12">
           <article className="flex-1">
             {post.coverImage && (
-              <div className="relative h-[400px] mb-12">
+              <div className="relative h-[400px] mb-12 rounded-xl overflow-hidden">
                 <Image
                   src={post.coverImage}
                   alt={post.title}
                   fill
-                  className="object-cover rounded-xl shadow-lg"
+                  className="object-cover"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
               </div>
             )}
             
-            <h1 className="text-5xl font-bold mb-6 text-gray-800">{post.title}</h1>
+            <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-pink-400 
+                           bg-clip-text text-transparent">
+              {post.title}
+            </h1>
             
-            <div className="flex flex-wrap gap-3 mb-12">
+            <div className="flex flex-wrap gap-3 mb-8">
               {post.tags.map((tag: string) => (
                 <Link 
                   key={tag}
                   href={`/blog/tag/${encodeURIComponent(tag)}`}
-                  className="bg-[#f5efe9] text-[#4a3f35] px-4 py-2 rounded-lg text-sm font-medium 
-                           hover:bg-[#e8d5c4] transition-colors duration-200"
+                  className="px-4 py-1.5 rounded-full text-sm bg-pink-50 text-pink-700 
+                           hover:bg-pink-100 transition-colors duration-200"
                 >
                   {tag}
                 </Link>
               ))}
             </div>
 
-            <div className="prose prose-lg max-w-none
-              prose-headings:font-bold
-              prose-h1:text-5xl prose-h1:mb-8
-              prose-h2:text-4xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-gray-800
-              prose-h3:text-3xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-gray-700
-              prose-p:text-lg prose-p:leading-relaxed prose-p:mb-6 prose-p:text-gray-600
-              prose-ul:my-6 prose-ul:list-disc prose-ul:pl-6
-              prose-li:text-gray-600 prose-li:mb-2
-              prose-strong:font-bold prose-strong:text-gray-800">
+            <div className="prose prose-pink max-w-none">
               <ReactMarkdown>{post.content}</ReactMarkdown>
             </div>
           </article>
-
+          
           <BlogSidebar 
-            suggestedPosts={suggestedPosts}
-            popularTags={post.tags}
+            suggestedPosts={suggestedPosts} 
+            popularTags={allTags}
             currentPostId={post.id}
           />
         </div>
       </div>
     );
   } catch (error) {
-    console.error('Error loading blog post:', error);
-    notFound();
+    console.error('Error fetching post:', error);
+    throw error;
   }
 }

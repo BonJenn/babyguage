@@ -8,24 +8,26 @@ interface PaginationProps {
 
 export default function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps) {
   return (
-    <div className="flex justify-center items-center space-x-2 mt-8">
+    <div className="flex justify-center items-center space-x-4 mt-12">
       {currentPage > 1 && (
         <Link
           href={`${baseUrl}?page=${currentPage - 1}`}
-          className="px-4 py-2 bg-white rounded-lg text-[#8b7355] border border-[#8b7355] hover:bg-[#8b7355] hover:text-white transition-colors"
+          className="px-4 py-2 rounded-full bg-pink-50 text-pink-600 
+                   hover:bg-pink-100 transition-colors duration-200"
         >
           Previous
         </Link>
       )}
       
-      <span className="px-4 py-2 text-gray-600">
+      <span className="text-gray-600">
         Page {currentPage} of {totalPages}
       </span>
       
       {currentPage < totalPages && (
         <Link
           href={`${baseUrl}?page=${currentPage + 1}`}
-          className="px-4 py-2 bg-white rounded-lg text-[#8b7355] border border-[#8b7355] hover:bg-[#8b7355] hover:text-white transition-colors"
+          className="px-4 py-2 rounded-full bg-pink-50 text-pink-600 
+                   hover:bg-pink-100 transition-colors duration-200"
         >
           Next
         </Link>

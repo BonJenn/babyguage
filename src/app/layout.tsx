@@ -51,9 +51,10 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
       </head>
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col bg-[#FFF5F6] text-gray-800">
         <Header />
-        <main className="flex-grow">
+        <main className="flex-grow px-4 sm:px-6 lg:px-8 
+                        bg-gradient-to-b from-pink-50/50 to-white/50">
           {children}
         </main>
         <Footer />
