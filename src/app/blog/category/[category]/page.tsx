@@ -3,7 +3,6 @@ import BlogList from '../../../../components/BlogList';
 import BlogSearch from '../../../../components/BlogSearch';
 import Pagination from '../../../../components/Pagination';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import BlogSidebar from '../../../../components/BlogSidebar';
 
 interface PageProps {
