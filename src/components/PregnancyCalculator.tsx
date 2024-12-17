@@ -91,14 +91,24 @@ export default function PregnancyCalculator() {
         },
         body: JSON.stringify(formData),
       });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.details || 'Failed to calculate probability');
+
+      const text = await response.text();
+      let data;
+      
+      try {
+        data = JSON.parse(text);
+      } catch (parseError) {
+        throw new Error(`Server response: ${text}`);
       }
-      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.details || 'Failed to calculate probability');
+      }
+
       if (data.error) {
         throw new Error(data.error);
       }
+
       setResult(data);
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Failed to calculate probability. Please try again.');
