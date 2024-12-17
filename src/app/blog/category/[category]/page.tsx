@@ -53,7 +53,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
           <BlogSidebar 
             suggestedPosts={posts.slice(0, 3)}
             popularTags={allTags}
-            currentPostId={null}
+            currentPostId={undefined}
           />
         </div>
       </div>

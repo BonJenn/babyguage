@@ -4,7 +4,7 @@ import { BlogPost } from '../types/blog';
 
 interface BlogSidebarProps {
   suggestedPosts: BlogPost[];
-  popularTags?: string[];
+  popularTags: string[];
   currentPostId?: string;
 }
 
