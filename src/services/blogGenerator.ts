@@ -8,52 +8,45 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY_2 });
 
 export async function generateBlogPost(topic: string): Promise<BlogPost> {
   try {
-    // Generate content with GPT-4
-    const contentResponse = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        {
-          role: "system",
-          content: `You are one of several expert writers for a women's health blog. Each post should have a unique voice and perspective. Write in a conversational, engaging style.
-
-          For Q&A posts: Write as Dr. Sarah Thompson, a compassionate OB-GYN
-          For personal stories: Write as a real person sharing their experience
-          For research posts: Write as a health journalist
-          For general topics: Rotate between different expert voices (nutritionist, therapist, midwife, etc.)
-
-          Important formatting:
-          - Use bold for emphasis (**text**)
-          - Use italics for quotes (*text*)
-          - Use bullet points when appropriate
-          - Break into clear paragraphs
-          - NO heading tags (h2, h3) - use bold text instead
-          - Include a brief author bio at the end`
-        },
-        {
-          role: "user",
-          content: `Write a comprehensive blog post about ${topic}. Structure the content with clear sections and ensure proper paragraph spacing.`
-        }
-      ],
-      temperature: 0.7,
-    });
-
-    const content = contentResponse.choices[0].message.content || "";
+    let content = '';
+    const maxRetries = 3;
     
-    // Add logging to check content structure
-    console.log('Generated content structure check:', {
-      topic,
-      sectionCount: (content.match(/## /g) || []).length,
-      subsectionCount: (content.match(/### /g) || []).length,
-      firstFewLines: content.split('\n').slice(0, 5),
-    });
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`Attempt ${attempt}: Generating content for topic: ${topic}`);
+        
+        const response = await openai.chat.completions.create({
+          model: "gpt-4",
+          messages: [
+            {
+              role: "system",
+              content: "Generate a blog post with sections marked by '## '."
+            },
+            {
+              role: "user",
+              content: `Write a detailed blog post about ${topic}. Include sections with '## ' markers.`
+            }
+          ],
+          temperature: 0.3,
+        });
 
-    // Validate content structure
-    if (!content.includes('## ')) {
-      console.error('Content missing required section markers for topic:', topic);
-      throw new Error('Generated content missing required structure');
+        content = response.choices[0]?.message?.content || "";
+        console.log('Generated content:', content);
+
+        if (content.includes('## ')) {
+          break;
+        } else {
+          console.warn(`Content missing required section markers for topic: ${topic}`);
+        }
+      } catch (error) {
+        console.error(`Error during content generation attempt ${attempt}:`, error);
+      }
     }
 
-    // Generate SEO metadata
+    if (!content.includes('## ')) {
+      throw new Error('Generated content missing required structure after retries');
+    }
+
     const seoResponse = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
@@ -69,7 +62,6 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
       temperature: 0.3,
     });
 
-    // Generate and store image
     const imageUrl = await generateAndStoreImage(topic);
 
     const seoData = JSON.parse(seoResponse.choices[0].message.content || "{}");
@@ -83,7 +75,7 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
         trim: true,
         remove: /[*+~.()'"!:@]/g
       }),
-      content: contentResponse.choices[0].message.content || "",
+      content: content,
       excerpt: seoData.description,
       coverImage: imageUrl || null,
       publishDate: new Date().toISOString(),
@@ -98,7 +90,6 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
       slug: blogPost.slug
     });
 
-    // Save to MongoDB
     const result = await BlogService.createPost(blogPost);
     console.log('Blog post saved to database:', {
       id: result.id,
@@ -115,7 +106,6 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
 
 async function generateAndStoreImage(topic: string): Promise<string> {
   try {
-    // Generate image with DALL-E
     const response = await openai.images.generate({
       model: "dall-e-3",
       prompt: `A professional, medical-style image related to ${topic} for a pregnancy and fertility blog. The image should be clean, professional, and suitable for medical content.`,
@@ -130,7 +120,6 @@ async function generateAndStoreImage(topic: string): Promise<string> {
       throw new Error('No image URL received from OpenAI');
     }
 
-    // Upload to Cloudinary
     const uploadResponse = await cloudinary.uploader.upload(imageUrl, {
       folder: 'blog-images',
       transformation: [
@@ -143,7 +132,6 @@ async function generateAndStoreImage(topic: string): Promise<string> {
     return uploadResponse.secure_url;
   } catch (error) {
     console.error('Error generating/storing image:', error);
-    // Return a default image URL if generation fails
     return 'https://res.cloudinary.com/your-cloud-name/image/upload/v1/blog-images/default-blog-image.jpg';
   }
 }
@@ -188,5 +176,4 @@ async function generateUniqueTopic(): Promise<string> {
   return response.choices[0].message.content?.trim() || "Women's Health Tips";
 }
 
-// Export it so we can use it in the API route
 export { generateUniqueTopic };

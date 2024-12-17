@@ -6,7 +6,11 @@ export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+  console.log('Cron job initiated:', new Date().toISOString());
+  console.log('Environment:', process.env.VERCEL_ENV);
+  
   const authHeader = request.headers.get('Authorization');
+  console.log('Auth header present:', !!authHeader);
   
   if (process.env.VERCEL_ENV === 'production' && (!authHeader || !authHeader.includes('Bearer'))) {
     console.log('Unauthorized cron attempt');
