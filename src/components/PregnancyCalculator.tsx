@@ -45,20 +45,7 @@ const inputClasses = `
 
 const dateInputClasses = `
   ${inputClasses}
-  text-pink-600
-  bg-[url('/calendar-icon.png')]
-  bg-no-repeat
-  bg-[length:24px_24px]
-  bg-[center_right_1rem]
   pr-12
-  [&::-webkit-calendar-picker-indicator] {
-    opacity: 0;
-    width: 44px;
-    height: 44px;
-    position: absolute;
-    right: 0;
-    cursor: pointer;
-  }
 `;
 
 const labelClasses = `
@@ -125,6 +112,34 @@ const ProgressIndicator = ({ currentStep }: { currentStep: number }) => {
     </div>
   );
 };
+
+const DateInput = ({ value, onChange, className }: { 
+  value: string, 
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  className?: string 
+}) => (
+  <div className="relative">
+    <input
+      type="date"
+      className={className}
+      value={value}
+      onChange={onChange}
+    />
+    <svg 
+      className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-pink-400 pointer-events-none" 
+      fill="none" 
+      viewBox="0 0 24 24" 
+      stroke="currentColor"
+    >
+      <path 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        strokeWidth={2} 
+        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" 
+      />
+    </svg>
+  </div>
+);
 
 export default function PregnancyCalculator() {
   const [step, setStep] = useState(1);
@@ -253,11 +268,10 @@ export default function PregnancyCalculator() {
               <>
                 <label className={labelClasses}>
                   When did your last period start?
-                  <input
-                    type="date"
-                    className={dateInputClasses}
+                  <DateInput
                     value={formData.periodStart}
                     onChange={(e) => setFormData({ ...formData, periodStart: e.target.value })}
+                    className={dateInputClasses}
                   />
                 </label>
                 <label className={labelClasses}>
@@ -278,11 +292,10 @@ export default function PregnancyCalculator() {
                 {!formData.isCurrentlyMenstruating && (
                   <label className={labelClasses}>
                     When did your last period end?
-                    <input
-                      type="date"
-                      className={dateInputClasses}
+                    <DateInput
                       value={formData.periodEnd}
                       onChange={(e) => setFormData({ ...formData, periodEnd: e.target.value })}
+                      className={dateInputClasses}
                     />
                   </label>
                 )}
@@ -304,11 +317,10 @@ export default function PregnancyCalculator() {
           <div className="space-y-4">
             <label className={labelClasses}>
               When did intercourse occur?
-              <input
-                type="date"
-                className={dateInputClasses}
+              <DateInput
                 value={formData.sexDate}
                 onChange={(e) => setFormData({ ...formData, sexDate: e.target.value })}
+                className={dateInputClasses}
               />
             </label>
             <div className="flex flex-col gap-2">
