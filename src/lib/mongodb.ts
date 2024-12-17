@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ServerApiVersion } from 'mongodb';
 
 if (!process.env.MONGODB_URI) {
   throw new Error('Please add your Mongo URI to .env.local')
@@ -8,15 +8,10 @@ const uri = process.env.MONGODB_URI;
 const options = {
   maxPoolSize: 10,
   serverApi: {
-    version: '1',
+    version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  },
-  autoEncryption: undefined,
-  cryptSharedLibPath: undefined,
-  cryptSharedLibRequired: false,
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+  }
 };
 
 let client: MongoClient;
