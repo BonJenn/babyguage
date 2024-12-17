@@ -110,7 +110,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
         <BlogSidebar 
           suggestedPosts={posts.slice(0, 3)}
           popularTags={allTags}
-          currentPostId={null}
+          currentPostId={undefined}
         />
       </div>
 
