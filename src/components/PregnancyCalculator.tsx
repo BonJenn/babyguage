@@ -30,33 +30,35 @@ type Result = {
 };
 
 const inputClasses = `
-  w-full px-6 py-4 
-  text-xl font-semibold text-pink-600 
+  w-full px-4 sm:px-6 py-3 sm:py-4 
+  text-lg sm:text-xl font-semibold text-pink-600 
   bg-white/40 
   border-none
   rounded-xl
   shadow-inner
   placeholder:text-pink-300/60
-  focus:outline-none focus:ring-4 focus:ring-pink-100
+  focus:outline-none focus:ring-2 focus:ring-pink-100
   transition-all duration-200
   backdrop-blur-sm
-  [&::-webkit-calendar-picker-indicator]:opacity-100
-  [&::-webkit-calendar-picker-indicator]:text-pink-600
-  [&::-webkit-calendar-picker-indicator]:bg-pink-600
-  dark:text-pink-600
   appearance-none
-  mobile:text-pink-600
-  mt-6
 `;
 
 const dateInputClasses = `
   ${inputClasses}
-  text-pink-600 !important
-  opacity-100 !important
-  color-scheme-light !important
-  [&::-webkit-calendar-picker-indicator]:filter-none
-  [&::-webkit-calendar-picker-indicator]:opacity-100
-  [&::-webkit-calendar-picker-indicator]:text-pink-600
+  text-pink-600
+  bg-[url('/calendar-icon.png')]
+  bg-no-repeat
+  bg-[length:24px_24px]
+  bg-[center_right_1rem]
+  pr-12
+  [&::-webkit-calendar-picker-indicator] {
+    opacity: 0;
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+  }
 `;
 
 const labelClasses = `
@@ -67,9 +69,21 @@ const labelClasses = `
   [&>*]:mt-6
 `;
 
-const buttonClasses = "w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-6 py-4 rounded-xl text-xl font-medium transition duration-300 shadow-lg hover:shadow-xl";
+const buttonClasses = `
+  w-full bg-gradient-to-r from-pink-500 to-purple-500 
+  hover:from-pink-600 hover:to-purple-600 
+  text-white px-4 sm:px-6 py-3 sm:py-4 
+  rounded-xl text-lg sm:text-xl font-medium 
+  transition duration-300 shadow-lg hover:shadow-xl
+`;
 
-const backButtonClasses = "w-full mt-2 bg-transparent border-2 border-pink-400 text-pink-600 hover:bg-pink-50 px-6 py-4 rounded-xl text-xl font-medium transition duration-300";
+const backButtonClasses = `
+  w-full mt-2 bg-transparent border-2 border-pink-400 
+  text-pink-600 hover:bg-pink-50 
+  px-4 sm:px-6 py-3 sm:py-4 
+  rounded-xl text-lg sm:text-xl font-medium 
+  transition duration-300
+`;
 
 const LoadingBar = () => (
   <div className="fixed top-0 left-0 w-full h-1 bg-pink-100">
@@ -540,7 +554,8 @@ export default function PregnancyCalculator() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-12 bg-gradient-to-br from-pink-50/90 via-white/80 to-purple-50/90 backdrop-blur-md rounded-2xl shadow-2xl border border-pink-100 mb-20">
+    <div className="max-w-2xl mx-auto p-6 sm:p-12 bg-gradient-to-br from-pink-50/90 via-white/80 to-purple-50/90 
+                    backdrop-blur-md rounded-xl sm:rounded-2xl shadow-xl border border-pink-100 mb-12 sm:mb-20">
       {loading && <LoadingBar />}
       <ProgressIndicator currentStep={step} />
       {!result ? (

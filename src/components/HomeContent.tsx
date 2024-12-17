@@ -45,41 +45,31 @@ export default function HomeContent({ posts }: { posts: BlogPost[] }) {
         <div className="absolute inset-0 bg-gradient-to-r from-pink-100/80 to-purple-100/80 backdrop-blur-sm" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl">
-            <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-purple-600 
-                         bg-clip-text text-transparent px-4 sm:px-0">
+            <h1 className="text-4xl sm:text-6xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-purple-600 
+                         bg-clip-text text-transparent px-4 sm:px-0 leading-tight">
               Your Journey to Parenthood Starts Here
             </h1>
-            <p className="text-xl text-gray-700 mb-8">
+            <p className="text-lg sm:text-xl text-gray-700 mb-8 px-4 sm:px-0">
               Expert guidance, personalized insights, and a supportive community for your fertility journey.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col gap-3 px-4 sm:px-0 sm:flex-row sm:gap-4 justify-center">
               <Link
                 href="/blog"
-                className="px-8 py-3 bg-pink-500 text-white rounded-full 
+                className="px-6 sm:px-8 py-2.5 sm:py-3 bg-pink-500 text-white rounded-full 
                          hover:bg-pink-600 transition-all duration-200 shadow-lg
-                         text-center"
+                         text-center text-base sm:text-lg"
               >
                 Explore Articles
               </Link>
               <button
                 onClick={scrollToCalculator}
-                className="px-8 py-3 bg-white text-pink-600 rounded-full 
+                className="px-6 sm:px-8 py-2.5 sm:py-3 bg-white text-pink-600 rounded-full 
                          hover:bg-pink-50 transition-all duration-200 shadow-lg
-                         flex items-center justify-center gap-2"
+                         flex items-center justify-center gap-2 text-base sm:text-lg"
               >
                 <span>AI Pregnancy Calculator</span>
-                <svg 
-                  className="w-5 h-5" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth="2"
-                    d="M19 14l-7 7m0 0l-7-7m7 7V3" 
-                  />
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
               </button>
             </div>
