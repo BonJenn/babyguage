@@ -5,7 +5,7 @@ import { BlogPost } from '../types/blog';
 interface BlogSidebarProps {
   suggestedPosts: BlogPost[];
   popularTags: string[];
-  currentPostId?: string;
+  currentPostId?: string | null;
 }
 
 export default function BlogSidebar({ suggestedPosts, popularTags, currentPostId }: BlogSidebarProps) {
