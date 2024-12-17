@@ -46,6 +46,8 @@ const inputClasses = `
 const dateInputClasses = `
   ${inputClasses}
   pr-12
+  min-h-[52px]
+  placeholder:text-pink-300/60
 `;
 
 const labelClasses = `
@@ -124,6 +126,7 @@ const DateInput = ({ value, onChange, className }: {
       className={className}
       value={value}
       onChange={onChange}
+      placeholder="Select date..."
     />
     <svg 
       className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-pink-400 pointer-events-none" 
