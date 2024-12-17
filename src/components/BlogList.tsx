@@ -2,7 +2,9 @@ import Link from 'next/link';
 import { BlogPost } from '../types/blog';
 import OptimizedImage from './OptimizedImage';
 
-export default function BlogList({ posts }: { posts: BlogPost[] }) {
+export default function BlogList({ posts = [] }: { posts: BlogPost[] }) {
+  if (!posts) return null;
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {posts.map((post) => (

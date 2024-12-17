@@ -52,11 +52,12 @@ export default function HomeContent({ posts }: { posts: BlogPost[] }) {
             <p className="text-xl text-gray-700 mb-8">
               Expert guidance, personalized insights, and a supportive community for your fertility journey.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/blog"
                 className="px-8 py-3 bg-pink-500 text-white rounded-full 
-                         hover:bg-pink-600 transition-all duration-200 shadow-lg"
+                         hover:bg-pink-600 transition-all duration-200 shadow-lg
+                         text-center"
               >
                 Explore Articles
               </Link>
@@ -64,9 +65,9 @@ export default function HomeContent({ posts }: { posts: BlogPost[] }) {
                 onClick={scrollToCalculator}
                 className="px-8 py-3 bg-white text-pink-600 rounded-full 
                          hover:bg-pink-50 transition-all duration-200 shadow-lg
-                         flex items-center gap-2"
+                         flex items-center justify-center gap-2"
               >
-                AI Pregnancy Calculator
+                <span>AI Pregnancy Calculator</span>
                 <svg 
                   className="w-5 h-5" 
                   fill="none" 
@@ -76,7 +77,7 @@ export default function HomeContent({ posts }: { posts: BlogPost[] }) {
                   <path 
                     strokeLinecap="round" 
                     strokeLinejoin="round" 
-                    strokeWidth={2} 
+                    strokeWidth="2"
                     d="M19 14l-7 7m0 0l-7-7m7 7V3" 
                   />
                 </svg>
@@ -131,12 +132,16 @@ export default function HomeContent({ posts }: { posts: BlogPost[] }) {
       <section className="py-20 bg-gradient-to-b from-white to-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Latest Insights</h2>
+            <h2 className="text-3xl font-bold mb-4">Latest Articles</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Stay informed with our latest articles on fertility, pregnancy, and women's health.
             </p>
           </div>
-          <BlogList posts={posts} />
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="w-full">
+              <BlogList posts={posts} />
+            </div>
+          </div>
           <div className="text-center mt-12">
             <Link
               href="/blog"
