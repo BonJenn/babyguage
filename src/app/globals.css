@@ -117,9 +117,9 @@ select.input-seamless option {
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
   border-radius: 1.5rem;
-  padding: 2rem;
+  padding: 3rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 .question-label {
@@ -136,4 +136,30 @@ select.input-seamless option {
 
 .animate-loading-bar {
   animation: loading 2s infinite ease-in-out;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.scale-90 {
+  transform: scale(0.9);
+}
+
+.scale-100 {
+  transform: scale(1);
+  animation: bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }

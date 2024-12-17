@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Footer() {
   return (
     <footer className="bg-white border-t border-pink-100">
@@ -5,9 +7,10 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
           <div className="md:col-span-2">
-            <h3 className="text-xl font-semibold mb-4 bg-gradient-to-r from-pink-600 to-purple-600 
-                         bg-clip-text text-transparent">
-              Baby Gauge
+            <h3 className="text-xl font-semibold mb-4">
+              <span className="bg-gradient-to-r from-pink-600 to-pink-400 bg-clip-text text-transparent">Baby</span>
+              <span className="text-gray-900">Gauge</span>
+              <span className="bg-gradient-to-r from-pink-600 to-pink-400 bg-clip-text text-transparent">.com</span>
             </h3>
             <p className="text-gray-600 mb-4">
               Your trusted source for fertility, pregnancy, and women's health information.
@@ -28,13 +31,26 @@ export default function Footer() {
               Quick Links
             </h4>
             <ul className="space-y-2">
-              {['About', 'Blog', 'Contact', 'Privacy Policy'].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-gray-600 hover:text-pink-500 transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <Link href="/about" className="text-gray-600 hover:text-pink-500 transition-colors">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="text-gray-600 hover:text-pink-500 transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="text-gray-600 hover:text-pink-500 transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-gray-600 hover:text-pink-500 transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -44,13 +60,26 @@ export default function Footer() {
               Categories
             </h4>
             <ul className="space-y-2">
-              {['Fertility', 'Pregnancy', 'Wellness', 'Family Planning'].map((category) => (
-                <li key={category}>
-                  <a href="#" className="text-gray-600 hover:text-pink-500 transition-colors">
-                    {category}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <Link href="/blog/category/fertility" className="text-gray-600 hover:text-pink-500 transition-colors">
+                  Fertility
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog/category/pregnancy" className="text-gray-600 hover:text-pink-500 transition-colors">
+                  Pregnancy
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog/category/wellness" className="text-gray-600 hover:text-pink-500 transition-colors">
+                  Wellness
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog/category/family-planning" className="text-gray-600 hover:text-pink-500 transition-colors">
+                  Family Planning
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

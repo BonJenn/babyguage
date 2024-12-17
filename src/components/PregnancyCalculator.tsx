@@ -40,14 +40,31 @@ const inputClasses = `
   focus:outline-none focus:ring-4 focus:ring-pink-100
   transition-all duration-200
   backdrop-blur-sm
+  [&::-webkit-calendar-picker-indicator]:opacity-100
+  [&::-webkit-calendar-picker-indicator]:text-pink-600
+  [&::-webkit-calendar-picker-indicator]:bg-pink-600
+  dark:text-pink-600
+  appearance-none
+  mobile:text-pink-600
+  mt-6
+`;
+
+const dateInputClasses = `
+  ${inputClasses}
+  text-pink-600 !important
+  opacity-100 !important
+  color-scheme-light !important
+  [&::-webkit-calendar-picker-indicator]:filter-none
+  [&::-webkit-calendar-picker-indicator]:opacity-100
+  [&::-webkit-calendar-picker-indicator]:text-pink-600
 `;
 
 const labelClasses = `
-  block 
-  text-lg font-medium 
+  block mb-8
+  text-2xl font-bold
   bg-gradient-to-r from-pink-600 to-purple-600 
   bg-clip-text text-transparent 
-  mb-2
+  [&>*]:mt-6
 `;
 
 const buttonClasses = "w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-6 py-4 rounded-xl text-xl font-medium transition duration-300 shadow-lg hover:shadow-xl";
@@ -59,6 +76,41 @@ const LoadingBar = () => (
     <div className="h-full bg-gradient-to-r from-pink-500 to-purple-500 animate-loading-bar"></div>
   </div>
 );
+
+const ProgressIndicator = ({ currentStep }: { currentStep: number }) => {
+  const totalSteps = 10;
+  const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+
+  return (
+    <div className="mb-20">
+      {/* Progress Bar */}
+      <div className="relative h-2 bg-pink-100 rounded-full overflow-hidden">
+        <div 
+          className="absolute h-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-500 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+      
+      {/* Step Indicators */}
+      <div className="relative mt-4">
+        <div className="absolute top-0 left-0 right-0 flex justify-between">
+          {Array.from({ length: totalSteps }).map((_, index) => (
+            <div 
+              key={index}
+              className={`w-6 h-6 rounded-full flex items-center justify-center text-xs
+                       transition-all duration-300 transform
+                       ${index + 1 <= currentStep 
+                         ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white scale-100' 
+                         : 'bg-pink-100 text-pink-400 scale-90'}`}
+            >
+              {index + 1}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function PregnancyCalculator() {
   const [step, setStep] = useState(1);
@@ -189,7 +241,7 @@ export default function PregnancyCalculator() {
                   When did your last period start?
                   <input
                     type="date"
-                    className={inputClasses}
+                    className={dateInputClasses}
                     value={formData.periodStart}
                     onChange={(e) => setFormData({ ...formData, periodStart: e.target.value })}
                   />
@@ -214,7 +266,7 @@ export default function PregnancyCalculator() {
                     When did your last period end?
                     <input
                       type="date"
-                      className={inputClasses}
+                      className={dateInputClasses}
                       value={formData.periodEnd}
                       onChange={(e) => setFormData({ ...formData, periodEnd: e.target.value })}
                     />
@@ -240,7 +292,7 @@ export default function PregnancyCalculator() {
               When did intercourse occur?
               <input
                 type="date"
-                className={inputClasses}
+                className={dateInputClasses}
                 value={formData.sexDate}
                 onChange={(e) => setFormData({ ...formData, sexDate: e.target.value })}
               />
@@ -488,11 +540,9 @@ export default function PregnancyCalculator() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-8 bg-gradient-to-br from-pink-50/90 via-white/80 to-purple-50/90 backdrop-blur-md rounded-2xl shadow-2xl border border-pink-100">
-      <h1 className="text-4xl font-bold mb-8 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent tracking-tight">
-        Pregnancy Probability Calculator
-      </h1>
+    <div className="max-w-2xl mx-auto p-12 bg-gradient-to-br from-pink-50/90 via-white/80 to-purple-50/90 backdrop-blur-md rounded-2xl shadow-2xl border border-pink-100 mb-20">
       {loading && <LoadingBar />}
+      <ProgressIndicator currentStep={step} />
       {!result ? (
         renderQuestion()
       ) : (

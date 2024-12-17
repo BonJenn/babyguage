@@ -21,9 +21,10 @@ export default function Header() {
                 priority
               />
             </div>
-            <span className="text-xl font-semibold bg-gradient-to-r from-pink-600 to-pink-400 
-                           bg-clip-text text-transparent">
-              Baby Gauge
+            <span className="text-xl font-semibold">
+              <span className="bg-gradient-to-r from-pink-600 to-pink-400 bg-clip-text text-transparent">Baby</span>
+              <span className="text-gray-900">Gauge</span>
+              <span className="bg-gradient-to-r from-pink-600 to-pink-400 bg-clip-text text-transparent">.com</span>
             </span>
           </Link>
 

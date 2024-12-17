@@ -123,7 +123,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
         <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
           Subscribe to our newsletter for the latest articles, tips, and insights about fertility and women's health.
         </p>
-        <form className="max-w-md mx-auto flex gap-4">
+        <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
           <input
             type="email"
             placeholder="Enter your email"
