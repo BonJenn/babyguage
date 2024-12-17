@@ -81,13 +81,6 @@ export default function PregnancyCalculator() {
   const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (field: keyof FormData, value: number | string | boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
   const handleSubmit = async () => {
     setLoading(true);
     try {

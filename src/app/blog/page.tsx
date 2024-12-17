@@ -5,7 +5,7 @@ import BlogSidebar from '../../components/BlogSidebar';
 import Pagination from '../../components/Pagination';
 import { siteConfig } from '../../config/site';
 import Link from 'next/link';
-import { BlogPost } from '../../types/blog';
+import { BlogPost as _BlogPost } from '../../types/blog';
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
