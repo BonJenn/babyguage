@@ -6,7 +6,7 @@ export interface BlogPost {
   slug: string;
   content: string;
   excerpt: string;
-  coverImage: string;
+  coverImage: string | null;
   publishDate: string;
   tags: string[];
   seoTitle: string;

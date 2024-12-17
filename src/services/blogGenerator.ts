@@ -85,7 +85,7 @@ export async function generateBlogPost(topic: string): Promise<BlogPost> {
       }),
       content: contentResponse.choices[0].message.content || "",
       excerpt: seoData.description,
-      coverImage: imageUrl || "",
+      coverImage: imageUrl || null,
       publishDate: new Date().toISOString(),
       tags: seoData.keywords,
       seoTitle: seoData.title,
